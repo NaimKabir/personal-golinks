@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "GoLinks",
+  "version": "0.1",
+  "description": "Redirects http://go/ links",
+  "background": {
+    "service_worker": "extension.js"
+  },
+  "permissions": [
+	  "webRequest", 
+	  "declarativeNetRequest"
+  ],
+  "host_permissions": [
+	  "*://go/*"
+  ]
+}
