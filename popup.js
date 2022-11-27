@@ -60,12 +60,35 @@ function addLink(shortlink, longDestination) {
 	})
 }
 
+function prepopulateLongLinkForm(longLinkForm) {
+	// Assume at least one window must be last focused to trigger the extension,
+	// and that exactly one tab is highlighted in that window.
+	chrome.windows.getLastFocused(
+		null,
+		(window) => {
+			const queryInfo = {
+				active: true, 
+				highlighted: true,
+				windowId: window.id
+			}
+			chrome.tabs.query(queryInfo, (tabs) => {
+				// There should only be the one active tab!
+				const tab = tabs[0];
+				longLinkForm.value = tab.url || '';
+			})
+		}
+	)
+}
+
 // Display current Go-links—fetched directly from Chrome redirect-rules
 // we've set.
 chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 
 const shortLinkForm = document.getElementById( 'shortLink' );
+
 const longLinkForm = document.getElementById( 'longLink' );
+prepopulateLongLinkForm(longLinkForm);
+
 const addButton = document.getElementById( 'add' );
 addButton.addEventListener( 'click', () => {
 	addLink(shortLinkForm.value, longLinkForm.value);

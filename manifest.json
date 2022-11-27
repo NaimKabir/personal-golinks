@@ -9,7 +9,8 @@
   },
   "permissions": [
 	  "webRequest", 
-	  "declarativeNetRequest"
+	  "declarativeNetRequest",
+	  "tabs"
   ],
   "host_permissions": [
 	  "*://go/*"
