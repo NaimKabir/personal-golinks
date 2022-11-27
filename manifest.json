@@ -5,10 +5,7 @@
   "description": "Redirects http://go/ links",
   "action": {
 	  "default_title": "Personal Go-links",
-	  "default_popup": "action.html"
-  },
-  "background": {
-    "service_worker": "background.js"
+	  "default_popup": "popup.html"
   },
   "permissions": [
 	  "webRequest", 
