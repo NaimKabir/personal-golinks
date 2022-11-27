@@ -8,7 +8,7 @@
 	  "default_popup": "action.html"
   },
   "background": {
-    "service_worker": "extension.js"
+    "service_worker": "background.js"
   },
   "permissions": [
 	  "webRequest", 
