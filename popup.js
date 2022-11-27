@@ -41,14 +41,11 @@ function renderLinks(dynamicRulesResult) {
 	links.forEach(renderLink)
 }
 
-
-function createID() {
-	return self.crypto.randomUUID();
-}
-
 function addLink(shortlink, longDestination) {
 	chrome.declarativeNetRequest.getDynamicRules( (rules) => {
-		const id = rules.length;
+		// Assume that the last rule was the last one added, and consider its ID 
+		// a cursor for autoincrementing the ID.
+		const id = rules.length >= 1 ? rules[rules.length - 1].id + 1 : 1; 
 		chrome.declarativeNetRequest.updateDynamicRules({    
 			addRules: [{
 		      		'id': id,
