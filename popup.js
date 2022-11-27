@@ -47,25 +47,28 @@ function createID() {
 }
 
 function addLink(shortlink, longDestination) {
-	chrome.declarativeNetRequest.updateDynamicRules({    
-		addRules: [{
-	      		'id': 1001,
-	      		'priority': 1,
-	      		'action': {
-	        	'type': 'redirect',
-	        	'redirect': {
-	          		url: longDestination
-	        	}
-		      	},
-	      		'condition': {
-	      		  'urlFilter': PREFIX + shortlink,
-	      		  'resourceTypes': [
-	      		    'csp_report', 'font', 'image', 'main_frame', 'media', 'object', 'other', 'ping', 'script',
-	      		    'stylesheet', 'sub_frame', 'webbundle', 'websocket', 'webtransport', 'xmlhttprequest'
-	      		  ]
-	      		}
-	    	}],
-	   	removeRuleIds: [1001]
+	chrome.declarativeNetRequest.getDynamicRules( (rules) => {
+		const id = rules.length;
+		chrome.declarativeNetRequest.updateDynamicRules({    
+			addRules: [{
+		      		'id': id,
+		      		'priority': 1,
+		      		'action': {
+		        	'type': 'redirect',
+		        	'redirect': {
+		          		url: longDestination
+		        	}
+			      	},
+		      		'condition': {
+		      		  'urlFilter': PREFIX + shortlink,
+		      		  'resourceTypes': [
+		      		    'csp_report', 'font', 'image', 'main_frame', 'media', 'object', 'other', 'ping', 'script',
+		      		    'stylesheet', 'sub_frame', 'webbundle', 'websocket', 'webtransport', 'xmlhttprequest'
+		      		  ]
+		      		}
+		    	}],
+		   	removeRuleIds: [id]
+		})
 	})
 }
 
