@@ -9,11 +9,12 @@ function extractLinksFromDynamicRules(dynamicRulesResult) {
 	// TODO: Do we need to filter for only this extension's redirect rules?
 	return dynamicRulesResult.map(rule => {
 		// get shortLink and remove prefix for readability
-		let shortLink = rule['condition']['urlFilter'];
+		let shortLink = rule.condition.urlFilter;
 		shortLink = shortLink.slice(domainPrefix.length);
 		return {
 			shortLink: shortLink, 
-			longLink: rule['action']["redirect"]["url"]
+			longLink: rule.action.redirect.url,
+			id: rule.id,
 		}
 	})
 }
@@ -21,12 +22,20 @@ function extractLinksFromDynamicRules(dynamicRulesResult) {
 function renderLink(link) {
 	linksElement = document.getElementById(IDS.links);
 	const linkNode = document.createElement("li");
-	const textNode = document.createTextNode(link['shortLink']);
+	const textNode = document.createTextNode(link.shortLink + ' ' + link.id);
+	const buttonNode = document.createElement("button");
+	buttonNode.innerHtml = "rm";
+	buttonNode.addEventListener( 'click', () => {
+		removeLinkByID(link.id);
+		linkNode.remove();
+	} );
+
 	linkNode.appendChild(textNode);
+	linkNode.appendChild(buttonNode);
+
 	linksElement.appendChild(linkNode);
 }
 
-// Display each link with a deletion button to clear the rule 
 function renderLinks(dynamicRulesResult) {
 	links = extractLinksFromDynamicRules(dynamicRulesResult);
 	links.forEach(renderLink)
@@ -57,6 +66,12 @@ function addLink(shortlink, longDestination) {
 	      		}
 	    	}],
 	   	removeRuleIds: [1001]
+	})
+}
+
+function removeLinkByID(id) {
+	chrome.declarativeNetRequest.updateDynamicRules({    
+		removeRuleIds: [id]
 	})
 }
 
