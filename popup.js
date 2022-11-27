@@ -1,18 +1,24 @@
-const PREFIX = '*://go/'
-const IDS = {links: "links"}
+const domainPrefix = '*://'
+const PREFIX = domainPrefix + 'go/'
+const IDS = {
+	links: "links"
+}
 
 // extract "Link" tuples, which are (shortLink -> longLink) linkages
 function extractLinksFromDynamicRules(dynamicRulesResult) {
-	// get shortLink and remove prefix for readability
+	// TODO: Do we need to filter for only this extension's redirect rules?
 	return dynamicRulesResult.map(rule => {
+		// get shortLink and remove prefix for readability
+		let shortLink = rule['condition']['urlFilter'];
+		shortLink = shortLink.slice(domainPrefix.length);
 		return {
-			shortLink: rule['condition']['urlFilter'], 
+			shortLink: shortLink, 
 			longLink: rule['action']["redirect"]["url"]
 		}
 	})
 }
 
-function displayLink(link) {
+function renderLink(link) {
 	linksElement = document.getElementById(IDS.links);
 	const linkNode = document.createElement("li");
 	const textNode = document.createTextNode(link['shortLink']);
@@ -21,9 +27,9 @@ function displayLink(link) {
 }
 
 // Display each link with a deletion button to clear the rule 
-function displayLinks(dynamicRulesResult) {
+function renderLinks(dynamicRulesResult) {
 	links = extractLinksFromDynamicRules(dynamicRulesResult);
-	links.forEach(displayLink)
+	links.forEach(renderLink)
 }
 
 
@@ -54,7 +60,9 @@ function addLink(shortlink, longDestination) {
 	})
 }
 
-chrome.declarativeNetRequest.getDynamicRules(displayLinks);
+// Display current Go-links—fetched directly from Chrome redirect-rules
+// we've set.
+chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 
 const shortLinkForm = document.getElementById( 'shortLink' );
 const longLinkForm = document.getElementById( 'longLink' );
