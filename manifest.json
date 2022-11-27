@@ -3,6 +3,10 @@
   "name": "GoLinks",
   "version": "0.1",
   "description": "Redirects http://go/ links",
+  "action": {
+	  "default_title": "Personal Go-links",
+	  "default_popup": "action.html"
+  },
   "background": {
     "service_worker": "extension.js"
   },
