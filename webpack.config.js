@@ -1,6 +1,7 @@
 const path = require('path')
 
 module.exports = {
+	watch: true,
 	context: path.resolve(__dirname, 'popup'),
 	entry: './src/popup.js',
 	output: {
