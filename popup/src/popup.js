@@ -1,3 +1,10 @@
+// Import our custom CSS
+import './styles.scss'
+
+// Import all of Bootstrap's JS
+import * as bootstrap from 'bootstrap'
+
+
 const domainPrefix = '*://'
 const PREFIX = domainPrefix + 'go/'
 const IDS = {
