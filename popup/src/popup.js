@@ -14,6 +14,8 @@ const IDS = {
 // extract "Link" tuples, which are (shortLink -> longLink) linkages
 function extractLinksFromDynamicRules(dynamicRulesResult) {
 	// TODO: Do we need to filter for only this extension's redirect rules?
+	const errors = document.getElementById( 'errors' );
+	errors.innerHTML = dynamicRulesResult.length;
 	return dynamicRulesResult.map(rule => {
 		// get shortLink and remove prefix for readability
 		let shortLink = rule.condition.urlFilter;
@@ -27,11 +29,10 @@ function extractLinksFromDynamicRules(dynamicRulesResult) {
 }
 
 function renderLink(link) {
-	linksElement = document.getElementById(IDS.links);
+	const linksElement = document.getElementById(IDS.links);
 	const linkNode = document.createElement("li");
 	const textNode = document.createTextNode(link.shortLink + ' ' + link.id);
 	const buttonNode = document.createElement("button");
-	buttonNode.innerHtml = "rm";
 	buttonNode.addEventListener( 'click', () => {
 		removeLinkByID(link.id);
 		linkNode.remove();
@@ -44,7 +45,7 @@ function renderLink(link) {
 }
 
 function renderLinks(dynamicRulesResult) {
-	links = extractLinksFromDynamicRules(dynamicRulesResult);
+	const links = extractLinksFromDynamicRules(dynamicRulesResult);
 	links.forEach(renderLink)
 }
 
@@ -102,11 +103,19 @@ function prepopulateLongLinkForm(longLinkForm) {
 	)
 }
 
+function listenForShortLinkInputs(shortLinkForm) {
+	shortLinkForm.addEventListener( 'keypress', () => {
+		shortLinkHelp = document.getElementById( 'shortLinkHelp' );
+		shortLinkHelp.innerHTML = 'beep';
+	} );
+}
+
 // Display current Go-links—fetched directly from Chrome redirect-rules
 // we've set.
 chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 
 const shortLinkForm = document.getElementById( 'shortLink' );
+listenForShortLinkInputs(shortLinkForm);
 
 const longLinkForm = document.getElementById( 'longLink' );
 prepopulateLongLinkForm(longLinkForm);
@@ -116,3 +125,5 @@ addButton.addEventListener( 'click', () => {
 	addLink(shortLinkForm.value, longLinkForm.value);
 } );
 
+const errors = document.getElementById( 'errors' );
+//errors.innerHTML = document.getElementById( IDS.links );
