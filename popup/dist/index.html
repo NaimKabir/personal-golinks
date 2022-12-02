@@ -1,0 +1,29 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<div class="container-md mx-auto px-4 py-4 text-nowrap" style="width: 400px">
+	<form>
+		<div class="mb-3">
+	  		<label class="form-label" for="longLink">Long link:</label>
+	  		<input class="form-control" type="text" id="longLink" name="longLink">
+		</div>
+		<div class="mb-3">
+	  		<label class="form-label" for="shortLink">Short link:</label>
+	  		<input class="form-control" type="text" id="shortLink" name="shortLink" aria-describedby="shortLinkHelp">
+    			<div id="shortLinkHelp" class="form-text">Hello</div>
+		</div>
+	  	<input class="btn btn-primary" type="submit" id="add" value="Add">
+	</form>
+	<div id="links"></div>
+	<p id="errors">Errors </p>
+</div>
+</body>
+
+
+<script src="main.js"></script> 
+
+</html>
+
