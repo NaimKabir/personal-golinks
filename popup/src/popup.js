@@ -81,16 +81,16 @@ function sanitizeInput(text) {
 function addLink(shortLink, longDestination) {
 	chrome.declarativeNetRequest.getDynamicRules( (rules) => {
 		getShortLinkID(sanitizeInput(shortLink), rules).then( (id) => {
-			alert("ID is set to " + id) 
-			chrome.declarativeNetRequest.updateDynamicRules({    
+			alert("ID is setting to " + id); 
+			chrome.declarativeNetRequest.updateDynamicRules({
 				addRules: [{
 			      		'id': id,
 			      		'priority': 1,
 			      		'action': {
-			        	'type': 'redirect',
-			        	'redirect': {
-			          		url: longDestination
-			        	}
+			        		'type': 'redirect',
+			        		'redirect': {
+			          			url: longDestination
+			        		}
 				      	},
 			      		'condition': {
 			      		  'urlFilter': PREFIX + shortlink,
@@ -101,8 +101,8 @@ function addLink(shortLink, longDestination) {
 			      		}
 			    	}],
 			   	removeRuleIds: [id]
-		})}
-		)
+			}, () => {alert("added rule")})
+		})
 	})
 }
 
