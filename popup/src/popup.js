@@ -19,15 +19,12 @@ function notEmpty(object) {
 
 async function getShortLinkID(shortLink, dynamicRulesResult) {
 	let id;
-	await await chrome.storage.local.get(shortLink).then( async (result) => {
-		alert("Result: " + JSON.stringify(result));
-		if (notEmpty(result)) {
-			id = result[shortLink];
-		} else {
-			await setShortLinkID(shortLink, dynamicRulesResult).then( (setId) => {id = setId});
-			alert("Was empty. Setting ID to " + id);
-		}
-	})
+	const result = await chrome.storage.local.get(shortLink);
+	if (notEmpty(result)) {
+	       id = result[shortLink];
+	} else {
+	       id = await setShortLinkID(shortLink, dynamicRulesResult)
+	}
 	return id;
 }
 
@@ -35,7 +32,7 @@ async function setShortLinkID(shortLink, dynamicRulesResult) {
 	// Assume that the last rule was the last one added, and consider its ID 
 	// a cursor for autoincrementing the ID.
 	const id = dynamicRulesResult.length >= 1 ? dynamicRulesResult[dynamicRulesResult.length - 1].id + 1 : 1; 
-	await chrome.storage.local.set({[shortLink]: id}, () => {});
+	chrome.storage.local.set({[shortLink]: id}, () => {});
 	return id;
 }
 
@@ -81,8 +78,8 @@ function sanitizeInput(text) {
 function addLink(shortLink, longDestination) {
 	chrome.declarativeNetRequest.getDynamicRules( (rules) => {
 		getShortLinkID(sanitizeInput(shortLink), rules).then( (id) => {
-			alert("ID is setting to " + id); 
 			chrome.declarativeNetRequest.updateDynamicRules({
+			   	removeRuleIds: [id],
 				addRules: [{
 			      		'id': id,
 			      		'priority': 1,
@@ -93,15 +90,14 @@ function addLink(shortLink, longDestination) {
 			        		}
 				      	},
 			      		'condition': {
-			      		  'urlFilter': PREFIX + shortlink,
+			      		  'urlFilter': PREFIX + shortLink,
 			      		  'resourceTypes': [
 			      		    'csp_report', 'font', 'image', 'main_frame', 'media', 'object', 'other', 'ping', 'script',
 			      		    'stylesheet', 'sub_frame', 'webbundle', 'websocket', 'webtransport', 'xmlhttprequest'
 			      		  ]
 			      		}
-			    	}],
-			   	removeRuleIds: [id]
-			}, () => {alert("added rule")})
+			    	}]
+			})
 		})
 	})
 }
@@ -151,7 +147,7 @@ prepopulateLongLinkForm(longLinkForm);
 
 const addButton = document.getElementById( 'add' );
 addButton.addEventListener( 'click', () => {
-	addLink(shortLinkForm.value, longLinkForm.value);
+	addLink(shortLinkForm.value, longLinkForm.value)
 } );
 
 const errors = document.getElementById( 'errors' );
