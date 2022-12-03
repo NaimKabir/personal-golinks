@@ -7,15 +7,37 @@ import './styles.scss'
 
 const domainPrefix = '*://'
 const PREFIX = domainPrefix + 'go/'
+const CACHE = {}
 const IDS = {
 	links: "links"
 }
 
+function notEmpty(object) {
+	return object &&
+		Object.keys(object).length > 0
+}
+
+async function getShortLinkID(shortLink, dynamicRulesResult) {
+	let id;
+	const result = await chrome.storage.local.get(shortLink);
+	if (notEmpty(result)) {
+	       id = result[shortLink];
+	} else {
+	       id = await setShortLinkID(shortLink, dynamicRulesResult)
+	}
+	return id;
+}
+
+async function setShortLinkID(shortLink, dynamicRulesResult) {
+	// Assume that the last rule was the last one added, and consider its ID 
+	// a cursor for autoincrementing the ID.
+	const id = dynamicRulesResult.length >= 1 ? dynamicRulesResult[dynamicRulesResult.length - 1].id + 1 : 1; 
+	chrome.storage.local.set({[shortLink]: id}, () => {});
+	return id;
+}
+
 // extract "Link" tuples, which are (shortLink -> longLink) linkages
 function extractLinksFromDynamicRules(dynamicRulesResult) {
-	// TODO: Do we need to filter for only this extension's redirect rules?
-	const errors = document.getElementById( 'errors' );
-	errors.innerHTML = dynamicRulesResult.length;
 	return dynamicRulesResult.map(rule => {
 		// get shortLink and remove prefix for readability
 		let shortLink = rule.condition.urlFilter;
@@ -49,30 +71,33 @@ function renderLinks(dynamicRulesResult) {
 	links.forEach(renderLink)
 }
 
-function addLink(shortlink, longDestination) {
+function sanitizeInput(text) {
+	return text || '';
+}
+
+function addLink(shortLink, longDestination) {
 	chrome.declarativeNetRequest.getDynamicRules( (rules) => {
-		// Assume that the last rule was the last one added, and consider its ID 
-		// a cursor for autoincrementing the ID.
-		const id = rules.length >= 1 ? rules[rules.length - 1].id + 1 : 1; 
-		chrome.declarativeNetRequest.updateDynamicRules({    
-			addRules: [{
-		      		'id': id,
-		      		'priority': 1,
-		      		'action': {
-		        	'type': 'redirect',
-		        	'redirect': {
-		          		url: longDestination
-		        	}
-			      	},
-		      		'condition': {
-		      		  'urlFilter': PREFIX + shortlink,
-		      		  'resourceTypes': [
-		      		    'csp_report', 'font', 'image', 'main_frame', 'media', 'object', 'other', 'ping', 'script',
-		      		    'stylesheet', 'sub_frame', 'webbundle', 'websocket', 'webtransport', 'xmlhttprequest'
-		      		  ]
-		      		}
-		    	}],
-		   	removeRuleIds: [id]
+		getShortLinkID(sanitizeInput(shortLink), rules).then( (id) => {
+			chrome.declarativeNetRequest.updateDynamicRules({
+			   	removeRuleIds: [id],
+				addRules: [{
+			      		'id': id,
+			      		'priority': 1,
+			      		'action': {
+			        		'type': 'redirect',
+			        		'redirect': {
+			          			url: longDestination
+			        		}
+				      	},
+			      		'condition': {
+			      		  'urlFilter': PREFIX + shortLink,
+			      		  'resourceTypes': [
+			      		    'csp_report', 'font', 'image', 'main_frame', 'media', 'object', 'other', 'ping', 'script',
+			      		    'stylesheet', 'sub_frame', 'webbundle', 'websocket', 'webtransport', 'xmlhttprequest'
+			      		  ]
+			      		}
+			    	}]
+			})
 		})
 	})
 }
@@ -105,7 +130,7 @@ function prepopulateLongLinkForm(longLinkForm) {
 
 function listenForShortLinkInputs(shortLinkForm) {
 	shortLinkForm.addEventListener( 'keypress', () => {
-		shortLinkHelp = document.getElementById( 'shortLinkHelp' );
+		const shortLinkHelp = document.getElementById( 'shortLinkHelp' );
 		shortLinkHelp.innerHTML = 'beep';
 	} );
 }
@@ -114,15 +139,15 @@ function listenForShortLinkInputs(shortLinkForm) {
 // we've set.
 chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 
-const shortLinkForm = document.getElementById( 'shortLink' );
+const shortLinkForm = document.getElementById( 'shortLinkForm' );
 listenForShortLinkInputs(shortLinkForm);
 
-const longLinkForm = document.getElementById( 'longLink' );
+const longLinkForm = document.getElementById( 'longLinkForm' );
 prepopulateLongLinkForm(longLinkForm);
 
 const addButton = document.getElementById( 'add' );
 addButton.addEventListener( 'click', () => {
-	addLink(shortLinkForm.value, longLinkForm.value);
+	addLink(shortLinkForm.value, longLinkForm.value)
 } );
 
 const errors = document.getElementById( 'errors' );
