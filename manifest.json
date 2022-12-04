@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "GoLinks",
+  "name": "Personal Go-links",
   "version": "0.1",
   "description": "Redirects http://go/ links",
   "action": {

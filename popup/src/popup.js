@@ -66,7 +66,6 @@ function renderTrashCanIcon() {
   iconSvg.setAttribute('width', '16');
   iconSvg.setAttribute('fill', 'currentColor');
   iconSvg.setAttribute('viewBox', '0 0 16 16');
-  iconSvg.setAttribute('stroke', 'white');
   iconSvg.classList.add('bi');
   iconSvg.classList.add('bi-trash');
 
@@ -94,7 +93,7 @@ function renderTrashCanIcon() {
 function renderLink(link) {
   const linksElement = document.getElementById(IDS.links);
   const linkNode = document.createElement("li");
-  linkNode.className = "list-group-item list-group-item-action";
+  linkNode.className = "list-group-item d-flex justify-content-between align-items-center list-group-item-action";
   const textNode = document.createTextNode(
     goPrefix + link.shortLink + " " + link.id
   );
