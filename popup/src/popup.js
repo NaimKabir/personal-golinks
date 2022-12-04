@@ -186,10 +186,13 @@ function prepopulateLongLinkForm(longLinkForm) {
   });
 }
 
-function listenForShortLinkInputs(shortLinkForm) {
-  shortLinkForm.addEventListener("keypress", () => {
+function updateShortLinkHelp(shortLinkForm) {
     const shortLinkHelp = document.getElementById("shortLinkHelp");
-    shortLinkHelp.innerHTML = "beep";
+    shortLinkHelp.innerHTML = "go/" + shortLinkForm.value;
+}
+function listenForShortLinkInputs(shortLinkForm) {
+  shortLinkForm.addEventListener("keyup", () => {
+    updateShortLinkHelp(shortLinkForm);
   });
 }
 
