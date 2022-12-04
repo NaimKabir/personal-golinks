@@ -5,7 +5,8 @@ import "./styles.scss";
 // import * as bootstrap from 'bootstrap'
 
 const domainPrefix = "*://";
-const PREFIX = domainPrefix + "go/";
+const goPrefix = "go/";
+const PREFIX = domainPrefix + goPrefix;
 const CACHE = {};
 const IDS = {
   links: "links",
@@ -38,7 +39,7 @@ function setShortLinkID(shortLink, dynamicRulesResult) {
 }
 
 async function removeShortLinkID(shortLink) {
-  await chrome.storage.local.remove(shortLink);
+  await chrome.storage.local.remove([shortLink]);
 }
 
 // extract "Link" tuples, which are (shortLink -> longLink) linkages
@@ -46,7 +47,7 @@ function extractLinksFromDynamicRules(dynamicRulesResult) {
   return dynamicRulesResult.map((rule) => {
     // get shortLink and remove prefix for readability
     let shortLink = rule.condition.urlFilter;
-    shortLink = shortLink.slice(domainPrefix.length);
+    shortLink = shortLink.slice(PREFIX.length);
     return {
       shortLink: shortLink,
       longLink: rule.action.redirect.url,
@@ -58,7 +59,7 @@ function extractLinksFromDynamicRules(dynamicRulesResult) {
 function renderLink(link) {
   const linksElement = document.getElementById(IDS.links);
   const linkNode = document.createElement("li");
-  const textNode = document.createTextNode(link.shortLink + " " + link.id);
+  const textNode = document.createTextNode(goPrefix + link.shortLink + " " + link.id);
   const buttonNode = document.createElement("button");
   buttonNode.addEventListener("click", () => {
     removeLink(link);
