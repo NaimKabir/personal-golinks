@@ -1,6 +1,7 @@
 import "./styles.scss";
 
 import {GO_PREFIX, PREFIX} from './constants';
+import {removeLink} from './links';
 
 // extract "Link" tuples, which are (shortLink -> longLink) linkages
 function extractLinksFromDynamicRules(dynamicRulesResult) {
