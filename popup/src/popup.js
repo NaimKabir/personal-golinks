@@ -23,17 +23,21 @@ async function getShortLinkID(shortLink, dynamicRulesResult) {
 	if (notEmpty(result)) {
 	       id = result[shortLink];
 	} else {
-	       id = await setShortLinkID(shortLink, dynamicRulesResult)
+	       id = setShortLinkID(shortLink, dynamicRulesResult)
 	}
 	return id;
 }
 
-async function setShortLinkID(shortLink, dynamicRulesResult) {
+function setShortLinkID(shortLink, dynamicRulesResult) {
 	// Assume that the last rule was the last one added, and consider its ID 
 	// a cursor for autoincrementing the ID.
 	const id = dynamicRulesResult.length >= 1 ? dynamicRulesResult[dynamicRulesResult.length - 1].id + 1 : 1; 
 	chrome.storage.local.set({[shortLink]: id}, () => {});
 	return id;
+}
+
+async function removeShortLinkID(shortLink) {
+	await chrome.storage.local.remove(shortLink);
 }
 
 // extract "Link" tuples, which are (shortLink -> longLink) linkages
@@ -56,7 +60,7 @@ function renderLink(link) {
 	const textNode = document.createTextNode(link.shortLink + ' ' + link.id);
 	const buttonNode = document.createElement("button");
 	buttonNode.addEventListener( 'click', () => {
-		removeLinkByID(link.id);
+		removeLink(link);
 		linkNode.remove();
 	} );
 
@@ -102,9 +106,10 @@ function addLink(shortLink, longDestination) {
 	})
 }
 
-function removeLinkByID(id) {
+function removeLink(link) {
+	removeShortLinkID(link.shortLink)
 	chrome.declarativeNetRequest.updateDynamicRules({    
-		removeRuleIds: [id]
+		removeRuleIds: [link.id]
 	})
 }
 
