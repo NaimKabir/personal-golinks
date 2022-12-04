@@ -21,8 +21,8 @@ function prepopulateLongLinkForm(longLinkForm) {
   });
 }
 
-function updateShortLinkHelp(shortLinkForm, shortLinkHelp) {
-  shortLinkHelp.innerHTML = "go/" + shortLinkForm.value;
+function updateShortLinkPreview(shortLinkForm, shortLinkPreview) {
+  shortLinkPreview.innerHTML = "go/" + shortLinkForm.value;
 }
 
 // Display current Go-links—fetched directly from Chrome redirect-rules
@@ -31,9 +31,9 @@ chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 
 // Update preview go-link as you type
 const shortLinkForm = document.getElementById("shortLinkForm");
-const shortLinkHelp = document.getElementById("shortLinkHelp");
+const shortLinkPreview = document.getElementById("shortLinkHelp");
 shortLinkForm.addEventListener("keyup", () => {
-  updateShortLinkHelp(shortLinkForm, shortLinkHelp);
+  updateShortLinkPreview(shortLinkForm, shortLinkPreview);
 });
 
 // Fetch URL of open tab as an optimistic guess
