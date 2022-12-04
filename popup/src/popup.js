@@ -7,7 +7,6 @@ import "./styles.scss";
 const domainPrefix = "*://";
 const goPrefix = "go/";
 const PREFIX = domainPrefix + goPrefix;
-const CACHE = {};
 const IDS = {
   links: "links",
 };
@@ -59,7 +58,9 @@ function extractLinksFromDynamicRules(dynamicRulesResult) {
 function renderLink(link) {
   const linksElement = document.getElementById(IDS.links);
   const linkNode = document.createElement("li");
-  const textNode = document.createTextNode(goPrefix + link.shortLink + " " + link.id);
+  const textNode = document.createTextNode(
+    goPrefix + link.shortLink + " " + link.id
+  );
   const buttonNode = document.createElement("button");
   buttonNode.addEventListener("click", () => {
     removeLink(link);
@@ -133,7 +134,7 @@ function removeLink(link) {
 function prepopulateLongLinkForm(longLinkForm) {
   // Assume at least one window must be last focused to trigger the extension,
   // and that exactly one tab is highlighted in that window.
-  chrome.windows.getLastFocused(null, (window) => {
+  chrome.windows.getCurrent(null, (window) => {
     const queryInfo = {
       active: true,
       highlighted: true,
