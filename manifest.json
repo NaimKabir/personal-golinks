@@ -8,6 +8,7 @@
     "default_popup": "popup/dist/index.html",
     "default_icon": {
       "16": "assets/icon16.png",
+      "24": "assets/icon24.png",
       "32": "assets/icon32.png"
     }
   },
