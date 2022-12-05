@@ -1,50 +1,56 @@
 import {PREFIX} from './constants';
 
+export interface Link {
+  shortLink: string
+  longLink: string
+  id: number
+}
+
 // Utilities
 
-function notEmpty(object) {
+function notEmpty(object: Object) {
   return object && Object.keys(object).length > 0;
 }
 
-function sanitizeInput(text) {
+function sanitizeInput(text: string) {
   return text || "";
 }
 
 // Data storage
 
-async function getShortLinkID(shortLink, dynamicRulesResult) {
-  let id;
+async function getShortLinkID(shortLink: string, rules: Array<chrome.declarativeNetRequest.Rule>) : Promise<number> {
+  let id: number;
   const result = await chrome.storage.local.get(shortLink);
   if (notEmpty(result)) {
     id = result[shortLink];
   } else {
-    id = setShortLinkID(shortLink, dynamicRulesResult);
+    id = setShortLinkID(shortLink, rules);
   }
   return id;
 }
 
-function setShortLinkID(shortLink, dynamicRulesResult) {
+function setShortLinkID(shortLink: string, rules: Array<chrome.declarativeNetRequest.Rule>): number {
   // Assume that the last rule was the last one added, and consider its ID
   // a cursor for autoincrementing the ID.
   const id =
-    dynamicRulesResult.length >= 1
-      ? dynamicRulesResult[dynamicRulesResult.length - 1].id + 1
+    rules.length >= 1
+      ? rules[rules.length - 1].id + 1
       : 1;
   chrome.storage.local.set({ [shortLink]: id }, () => {});
   return id;
 }
 
-async function removeShortLinkID(shortLink) {
+async function removeShortLinkID(shortLink: string) {
   await chrome.storage.local.remove([shortLink]);
 }
 
 // Links
 
-export function addLink(shortLink, longLink) {
+export function addLink(shortLink: string, longLink: string) {
   shortLink = sanitizeInput(shortLink);
   longLink = sanitizeInput(longLink);
   chrome.declarativeNetRequest.getDynamicRules((rules) => {
-    getShortLinkID(sanitizeInput(shortLink), rules).then((id) => {
+    getShortLinkID(sanitizeInput(shortLink), rules).then((id: number) => {
       chrome.declarativeNetRequest.updateDynamicRules({
         removeRuleIds: [id],
         addRules: [
@@ -52,7 +58,7 @@ export function addLink(shortLink, longLink) {
             id: id,
             priority: 1,
             action: {
-              type: "redirect",
+              type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
               redirect: {
                 url: longLink,
               },
@@ -60,21 +66,7 @@ export function addLink(shortLink, longLink) {
             condition: {
               urlFilter: PREFIX + shortLink,
               resourceTypes: [
-                "csp_report",
-                "font",
-                "image",
-                "main_frame",
-                "media",
-                "object",
-                "other",
-                "ping",
-                "script",
-                "stylesheet",
-                "sub_frame",
-                "webbundle",
-                "websocket",
-                "webtransport",
-                "xmlhttprequest",
+                chrome.declarativeNetRequest.ResourceType.MAIN_FRAME
               ],
             },
           },
@@ -84,7 +76,7 @@ export function addLink(shortLink, longLink) {
   });
 }
 
-export function removeLink(link) {
+export function removeLink(link: Link) {
   removeShortLinkID(link.shortLink);
   chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [link.id],

@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   watch: true,
   context: path.resolve(__dirname, "popup"),
-  entry: "./src/popup.js",
+  entry: "./src/popup.ts",
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "popup/dist"),
@@ -37,6 +37,14 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
     ],
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
   },
 };

@@ -3,9 +3,11 @@ import "./styles.scss";
 import {GO_PREFIX, PREFIX} from './constants';
 import {removeLink} from './links';
 
+import type {Link} from './links';
+
 // extract "Link" tuples, which are (shortLink -> longLink) linkages
-function extractLinksFromDynamicRules(dynamicRulesResult) {
-  return dynamicRulesResult.map((rule) => {
+function extractLinksFromDynamicRules(rules: Array<chrome.declarativeNetRequest.Rule>): Array<Link> {
+  return rules.map((rule) => {
     // get shortLink and remove prefix for readability
     let shortLink = rule.condition.urlFilter;
     shortLink = shortLink.slice(PREFIX.length);
@@ -52,7 +54,7 @@ function renderTrashCanIcon() {
   return iconSvg;
 }
 
-function renderLink(link) {
+function renderLink(link: Link) {
   const linksElement = document.getElementById( "links" );
   const linkNode = document.createElement("li");
   linkNode.className =
@@ -74,7 +76,7 @@ function renderLink(link) {
   linksElement.appendChild(linkNode);
 }
 
-export function renderLinks(dynamicRulesResult) {
+export function renderLinks(dynamicRulesResult: Array<chrome.declarativeNetRequest.Rule>) {
   const links = extractLinksFromDynamicRules(dynamicRulesResult);
   links.forEach(renderLink);
 }

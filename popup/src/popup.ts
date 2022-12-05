@@ -4,7 +4,7 @@ import "./styles.scss";
 import { addLink } from "./links";
 import { renderLinks } from "./render";
 
-function prepopulateLongLinkForm(longLinkForm) {
+function prepopulateLongLinkForm(longLinkForm: HTMLInputElement) {
   // Assume at least one window must be last focused to trigger the extension,
   // and that exactly one tab is highlighted in that window.
   chrome.windows.getCurrent(null, (window) => {
@@ -21,7 +21,7 @@ function prepopulateLongLinkForm(longLinkForm) {
   });
 }
 
-function updateShortLinkPreview(shortLinkForm, shortLinkPreview) {
+function updateShortLinkPreview(shortLinkForm: HTMLInputElement, shortLinkPreview: HTMLElement) {
   shortLinkPreview.innerHTML = "go/" + shortLinkForm.value;
 }
 
@@ -30,7 +30,7 @@ function updateShortLinkPreview(shortLinkForm, shortLinkPreview) {
 chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 
 // Update preview go-link as you type
-const shortLinkForm = document.getElementById("shortLinkForm");
+const shortLinkForm: HTMLInputElement = <HTMLInputElement>document.getElementById("shortLinkForm");
 const shortLinkPreview = document.getElementById("shortLinkHelp");
 shortLinkForm.addEventListener("keyup", () => {
   updateShortLinkPreview(shortLinkForm, shortLinkPreview);
@@ -38,7 +38,7 @@ shortLinkForm.addEventListener("keyup", () => {
 
 // Fetch URL of open tab as an optimistic guess
 // at the intended longLink
-const longLinkForm = document.getElementById("longLinkForm");
+const longLinkForm: HTMLInputElement = <HTMLInputElement>document.getElementById("longLinkForm");
 prepopulateLongLinkForm(longLinkForm);
 
 // Listen for button clicks to submit the form
