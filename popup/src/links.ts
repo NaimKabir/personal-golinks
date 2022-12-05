@@ -40,8 +40,14 @@ function storageKey(type: StorageType) {
 
 export async function initStorage() {
   // We do big fetches and then deal entirely with caches so we don't hit API rate limits
-  USED_IDS = await chrome.storage.local.get(storageKey(StorageType.ID_RESERVED));
-  SHORTLINK_IDS = await chrome.storage.local.get(storageKey(StorageType.SHORTLINK));
+  const usedIdKey = storageKey(StorageType.ID_RESERVED);
+  let usedIds = await chrome.storage.local.get(usedIdKey);
+  USED_IDS = usedIds[usedIdKey];
+
+  const shortLinksIdKey = storageKey(StorageType.SHORTLINK);
+  let shortLinkIds = await chrome.storage.local.get(shortLinksIdKey);
+  SHORTLINK_IDS = shortLinkIds[shortLinksIdKey]
+
   INITIALIZED = true;
 }
 
