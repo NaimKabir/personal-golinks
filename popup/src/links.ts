@@ -1,6 +1,6 @@
 import { PREFIX } from "./constants";
 
-const MAX_LINKS = chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES; 
+const MAX_LINKS = 5 // chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES; 
 
 export interface Link {
   shortLink: string;
@@ -22,7 +22,7 @@ function sanitizeInput(text: string) {
 
 enum StorageType {
   SHORTLINK = 1,
-  ID_RESERVATION = 2
+  ID_RESERVED = 2
 }
 
 function storageKey(key: string, type: StorageType): string {
@@ -31,16 +31,20 @@ function storageKey(key: string, type: StorageType): string {
   switch (type) {
     case StorageType.SHORTLINK:
       keyPrefix = 'SL-';
-    case StorageType.ID_RESERVATION:
+      break;
+    case StorageType.ID_RESERVED:
       keyPrefix = 'RS-';
+      break;
     default:
       keyPrefix = '';
   }
-  return keyPrefix;
+  return keyPrefix + key;
 }
 
 async function getStorage(key: string, type: StorageType): Promise<any> {
-  return chrome.storage.local.get(storageKey(key, type));
+  const _key = storageKey(key, type);
+  const result = await chrome.storage.local.get(_key);
+  return result[_key];
 }
 
 async function setStorage(key: string, value: number|boolean, type: StorageType) {
@@ -52,35 +56,30 @@ async function removeStorage(key: string, type: StorageType) {
 }
 
 async function reserveID(id: number) {
-  const type = StorageType.ID_RESERVATION;
-  const key = storageKey(id.toString(), type);
-  setStorage(key, false, type)
+  setStorage(id.toString(), true, StorageType.ID_RESERVED)
 }
 
 async function freeID(id: number) {
-  const type = StorageType.ID_RESERVATION;
-  const key = storageKey(id.toString(), type);
-  setStorage(key, true, type)
+  setStorage(id.toString(), false, StorageType.ID_RESERVED)
 }
 
 async function idIsFree(id: number): Promise<boolean> {
-  const result = await getStorage(id.toString(), StorageType.ID_RESERVATION);
-  return result || true;
+  const isReserved = await getStorage(id.toString(), StorageType.ID_RESERVED);
+  return !isReserved; // nil and false ID reservation status show up as free
 }
 
 async function getShortLinkID(
   shortLink: string,
-  rules: Array<chrome.declarativeNetRequest.Rule>
-): Promise<number> {
+): Promise<number | undefined> {
   let id: number;
   const result = await getStorage(shortLink, StorageType.SHORTLINK);
-  if (notEmpty(result)) {
+  if (result) {
     // To be safe, make sure this ID is reserved just in case
     // ID reservation failed before
     await reserveID(id);
     id = result[shortLink];
   } else {
-    id = await setShortLinkID(shortLink, rules);
+    id = await setShortLinkID(shortLink);
   }
   return id;
 }
@@ -89,12 +88,13 @@ async function getFreeID(): Promise<number | undefined> {
   // We only allow up to a max-cap of shortlink IDs—
   // so we'll naively iterate up to the cap until we find a free ID.
   // The iteration is capped so it shouldn't be a huge hit to speed.
-
   let id;
   // ID numbers must start at 1 to abide by chrome API rules
   for (let i=1; i <= MAX_LINKS; i++) {
-    if (await idIsFree(i)) {
+    const isFree = await idIsFree(i);
+    if (isFree) {
       id = i;
+      break;
     }
   }
   return id;
@@ -102,10 +102,11 @@ async function getFreeID(): Promise<number | undefined> {
 
 async function setShortLinkID(
   shortLink: string,
-  rules: Array<chrome.declarativeNetRequest.Rule>
-): Promise<number> {
-  // Find an unused ID and use it
+): Promise<number | undefined> {
   const id = await getFreeID();
+  if (!id) {
+    return;
+  }
   reserveID(id);
   setStorage(shortLink, id, StorageType.SHORTLINK);
   return id;
@@ -122,29 +123,27 @@ async function removeShortLinkID(shortLink: string) {
 export function addLink(shortLink: string, longLink: string) {
   shortLink = sanitizeInput(shortLink);
   longLink = sanitizeInput(longLink);
-  chrome.declarativeNetRequest.getDynamicRules((rules) => {
-    getShortLinkID(sanitizeInput(shortLink), rules).then((id: number) => {
-      chrome.declarativeNetRequest.updateDynamicRules({
-        removeRuleIds: [id],
-        addRules: [
-          {
-            id: id,
-            priority: 1,
-            action: {
-              type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
-              redirect: {
-                url: longLink,
-              },
-            },
-            condition: {
-              urlFilter: PREFIX + shortLink,
-              resourceTypes: [
-                chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
-              ],
+  getShortLinkID(shortLink).then((id: number) => {
+    chrome.declarativeNetRequest.updateDynamicRules({
+      removeRuleIds: [id],
+      addRules: [
+        {
+          id: id,
+          priority: 1,
+          action: {
+            type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
+            redirect: {
+              url: longLink,
             },
           },
-        ],
-      });
+          condition: {
+            urlFilter: PREFIX + shortLink,
+            resourceTypes: [
+              chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
+            ],
+          },
+        },
+      ],
     });
   });
 }
