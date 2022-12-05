@@ -1,11 +1,13 @@
 import "./styles.scss";
 
-import {GO_PREFIX, PREFIX} from './constants';
-import {removeLink} from './links';
+import { GO_PREFIX, PREFIX } from "./constants";
+import { removeLink } from "./links";
 
-import type {Link} from './links';
+import type { Link } from "./links";
 
-function extractLinksFromDynamicRules(rules: Array<chrome.declarativeNetRequest.Rule>): Array<Link> {
+function extractLinksFromDynamicRules(
+  rules: Array<chrome.declarativeNetRequest.Rule>
+): Array<Link> {
   return rules.map((rule) => {
     // get shortLink and remove prefix for readability
     let shortLink = rule.condition.urlFilter;
@@ -54,7 +56,7 @@ function renderTrashCanIcon() {
 }
 
 function renderLink(link: Link) {
-  const linksElement = document.getElementById( "links" );
+  const linksElement = document.getElementById("links");
   const linkNode = document.createElement("li");
   linkNode.className =
     "list-group-item d-flex justify-content-between align-items-center list-group-item-action";
@@ -75,7 +77,9 @@ function renderLink(link: Link) {
   linksElement.appendChild(linkNode);
 }
 
-export function renderLinks(dynamicRulesResult: Array<chrome.declarativeNetRequest.Rule>) {
+export function renderLinks(
+  dynamicRulesResult: Array<chrome.declarativeNetRequest.Rule>
+) {
   const links = extractLinksFromDynamicRules(dynamicRulesResult);
   links.forEach(renderLink);
 }

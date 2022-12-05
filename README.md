@@ -12,7 +12,7 @@ This is a Chrome extension using Manifest V3. We take advantage of Chrome's [Dec
 
 This project is bundled with [Webpack](https://webpack.js.org/concepts/). To re-build as you edit, try:
 
-```npx webpack```
+`npx webpack`
 
 This will trigger a job that will watch for changes and rebuild any time you save.
 
@@ -23,7 +23,7 @@ This extension is styled using [Bootstrap](https://getbootstrap.com/docs/5.2/get
 ### Conventions
 
 To format code:
-```npx prettier --write .```
+`npx prettier --write .`
 
 ## References
 

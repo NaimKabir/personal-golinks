@@ -21,7 +21,10 @@ function prepopulateLongLinkForm(longLinkForm: HTMLInputElement) {
   });
 }
 
-function updateShortLinkPreview(shortLinkForm: HTMLInputElement, shortLinkPreview: HTMLElement) {
+function updateShortLinkPreview(
+  shortLinkForm: HTMLInputElement,
+  shortLinkPreview: HTMLElement
+) {
   shortLinkPreview.innerHTML = "go/" + shortLinkForm.value;
 }
 
@@ -30,7 +33,9 @@ function updateShortLinkPreview(shortLinkForm: HTMLInputElement, shortLinkPrevie
 chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 
 // Update preview go-link as you type
-const shortLinkForm: HTMLInputElement = <HTMLInputElement>document.getElementById("shortLinkForm");
+const shortLinkForm: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById("shortLinkForm")
+);
 const shortLinkPreview = document.getElementById("shortLinkHelp");
 shortLinkForm.addEventListener("keyup", () => {
   updateShortLinkPreview(shortLinkForm, shortLinkPreview);
@@ -38,7 +43,9 @@ shortLinkForm.addEventListener("keyup", () => {
 
 // Fetch URL of open tab as an optimistic guess
 // at the intended longLink
-const longLinkForm: HTMLInputElement = <HTMLInputElement>document.getElementById("longLinkForm");
+const longLinkForm: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById("longLinkForm")
+);
 prepopulateLongLinkForm(longLinkForm);
 
 // Listen for button clicks to submit the form

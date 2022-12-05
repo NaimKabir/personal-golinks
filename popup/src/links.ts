@@ -1,9 +1,9 @@
-import {PREFIX} from './constants';
+import { PREFIX } from "./constants";
 
 export interface Link {
-  shortLink: string
-  longLink: string
-  id: number
+  shortLink: string;
+  longLink: string;
+  id: number;
 }
 
 // Utilities
@@ -18,7 +18,10 @@ function sanitizeInput(text: string) {
 
 // Data storage
 
-async function getShortLinkID(shortLink: string, rules: Array<chrome.declarativeNetRequest.Rule>) : Promise<number> {
+async function getShortLinkID(
+  shortLink: string,
+  rules: Array<chrome.declarativeNetRequest.Rule>
+): Promise<number> {
   let id: number;
   const result = await chrome.storage.local.get(shortLink);
   if (notEmpty(result)) {
@@ -29,13 +32,13 @@ async function getShortLinkID(shortLink: string, rules: Array<chrome.declarative
   return id;
 }
 
-function setShortLinkID(shortLink: string, rules: Array<chrome.declarativeNetRequest.Rule>): number {
+function setShortLinkID(
+  shortLink: string,
+  rules: Array<chrome.declarativeNetRequest.Rule>
+): number {
   // Assume that the last rule was the last one added, and consider its ID
   // a cursor for autoincrementing the ID.
-  const id =
-    rules.length >= 1
-      ? rules[rules.length - 1].id + 1
-      : 1;
+  const id = rules.length >= 1 ? rules[rules.length - 1].id + 1 : 1;
   chrome.storage.local.set({ [shortLink]: id }, () => {});
   return id;
 }
@@ -66,7 +69,7 @@ export function addLink(shortLink: string, longLink: string) {
             condition: {
               urlFilter: PREFIX + shortLink,
               resourceTypes: [
-                chrome.declarativeNetRequest.ResourceType.MAIN_FRAME
+                chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
               ],
             },
           },
