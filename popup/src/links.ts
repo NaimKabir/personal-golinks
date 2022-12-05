@@ -76,9 +76,9 @@ export function addLink(shortLink: string, longLink: string) {
   });
 }
 
-export function removeLink(link: Link) {
-  removeShortLinkID(link.shortLink);
-  chrome.declarativeNetRequest.updateDynamicRules({
+export async function removeLink(link: Link) {
+  await removeShortLinkID(link.shortLink);
+  await chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [link.id],
   });
 }
