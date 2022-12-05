@@ -27,6 +27,7 @@ function renderTrashCanIcon() {
     "path"
   );
 
+  // Paths stolen shamelessly from Bootstrap: https://icons.getbootstrap.com/icons/trash/
   iconSvg.setAttribute("height", "16");
   iconSvg.setAttribute("width", "16");
   iconSvg.setAttribute("fill", "currentColor");
