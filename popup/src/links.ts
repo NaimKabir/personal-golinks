@@ -73,14 +73,8 @@ async function idIsFree(id: number): Promise<boolean> {
 }
 
 async function getShortLinkID(shortLink: string): Promise<number | undefined> {
-  let id: number;
-  const result = await getStorage(shortLink, StorageType.SHORTLINK);
-  if (result) {
-    // To be safe, make sure this ID is reserved just in case
-    // ID reservation failed before
-    await reserveID(id);
-    id = result[shortLink];
-  } else {
+  let id = await getStorage(shortLink, StorageType.SHORTLINK);
+  if (!id) {
     id = await setShortLinkID(shortLink);
   }
   return id;
@@ -123,7 +117,12 @@ async function removeShortLinkID(shortLink: string) {
 export function addLink(shortLink: string, longLink: string) {
   shortLink = sanitizeInput(shortLink);
   longLink = sanitizeInput(longLink);
-  getShortLinkID(shortLink).then((id: number) => {
+  getShortLinkID(shortLink).then((id: number | undefined) => {
+    if (!id) {
+      // TODO: We're likely at the ID limit, and shouldn't do 
+      // anything here.
+      return;
+    }
     chrome.declarativeNetRequest.updateDynamicRules({
       removeRuleIds: [id],
       addRules: [
