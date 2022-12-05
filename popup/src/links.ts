@@ -63,17 +63,11 @@ async function getStorage(key: string, type: StorageType): Promise<any> {
   }
 }
 
-function saveBlock(type: StorageType){
-  let block;
-  switch (type) {
-    case StorageType.SHORTLINK:
-      block = SHORTLINK_IDS;
-      break;
-    case StorageType.ID_RESERVED:
-      block = USED_IDS;
-      break;
-  }
-  chrome.storage.local.set({[storageKey(type)]: block }, () => {});
+function saveBlock(){
+  chrome.storage.local.set({
+    [storageKey(StorageType.ID_RESERVED)]: USED_IDS,
+    [storageKey(StorageType.SHORTLINK)]: SHORTLINK_IDS,
+  }, () => {});
 }
 
 function setStorage(
@@ -150,7 +144,7 @@ async function setShortLinkID(shortLink: string): Promise<number | undefined> {
   }
   reserveID(id);
   setStorage(shortLink, id, StorageType.SHORTLINK);
-  saveBlock(StorageType.SHORTLINK)
+  saveBlock();
   return id;
 }
 
@@ -158,7 +152,7 @@ async function removeShortLinkID(shortLink: string) {
   const id = await getStorage(shortLink, StorageType.SHORTLINK);
   freeID(id);
   removeStorage(shortLink, StorageType.SHORTLINK);
-  saveBlock(StorageType.SHORTLINK)
+  saveBlock();
 }
 
 // Links
