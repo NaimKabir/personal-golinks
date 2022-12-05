@@ -5,7 +5,6 @@ import {removeLink} from './links';
 
 import type {Link} from './links';
 
-// extract "Link" tuples, which are (shortLink -> longLink) linkages
 function extractLinksFromDynamicRules(rules: Array<chrome.declarativeNetRequest.Rule>): Array<Link> {
   return rules.map((rule) => {
     // get shortLink and remove prefix for readability
