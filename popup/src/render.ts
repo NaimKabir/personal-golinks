@@ -5,6 +5,8 @@ import { removeLink } from "./links";
 
 import type { Link } from "./links";
 
+const LONG_LINK_CHARACTER_MAX = 32;
+
 function extractLinksFromDynamicRules(
   rules: Array<chrome.declarativeNetRequest.Rule>
 ): Array<Link> {
@@ -61,9 +63,27 @@ function renderLink(link: Link) {
   const linkNode = document.createElement("li");
   linkNode.className =
     "list-group-item d-flex justify-content-between align-items-center list-group-item-action";
-  const textNode = document.createTextNode(
-    GO_PREFIX + link.shortLink + " " + link.id
+
+  // Text area: with short link and long link displayed
+
+  const textNode = document.createElement('div');
+  textNode.className = 'justify-content-start';
+  const shortLinkNode = document.createTextNode(
+    GO_PREFIX + link.shortLink + " " 
   );
+  textNode.appendChild(shortLinkNode);
+
+  const longLinkPreview = document.createElement("footer");
+  longLinkPreview.className = "text-muted";
+  let longLinkText = link.longLink.slice(0, LONG_LINK_CHARACTER_MAX);
+  if (longLinkText.length < link.longLink.length) {
+    longLinkText = longLinkText + '...';
+  }
+  longLinkPreview.innerHTML = longLinkText;
+  textNode.appendChild(longLinkPreview)
+
+  // Button
+
   const buttonNode = document.createElement("button");
   buttonNode.className = "btn btn-danger";
   buttonNode.appendChild(renderTrashCanIcon());
