@@ -16,7 +16,7 @@ function prepopulateLongLinkForm(longLinkForm: HTMLInputElement) {
     chrome.tabs.query(queryInfo, (tabs) => {
       // There should only be the one active tab!
       const tab = tabs[0];
-      longLinkForm.value = tab.url || "";
+      longLinkForm.placeholder = tab.url || "";
     });
   });
 }
@@ -44,5 +44,5 @@ prepopulateLongLinkForm(longLinkForm);
 // Listen for button clicks to submit the form
 const addButton = document.getElementById("add");
 addButton.addEventListener("click", () => {
-  addLink(shortLinkForm.value, longLinkForm.value);
+  addLink(shortLinkForm.value, longLinkForm.placeholder || longLinkForm.value);
 });
