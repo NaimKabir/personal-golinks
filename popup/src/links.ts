@@ -42,11 +42,11 @@ export async function initStorage() {
   // We do big fetches and then deal entirely with caches so we don't hit API rate limits
   const usedIdKey = storageKey(StorageType.ID_RESERVED);
   let usedIds = await chrome.storage.local.get(usedIdKey);
-  USED_IDS = usedIds[usedIdKey];
+  USED_IDS = usedIds[usedIdKey] || {};
 
   const shortLinksIdKey = storageKey(StorageType.SHORTLINK);
   let shortLinkIds = await chrome.storage.local.get(shortLinksIdKey);
-  SHORTLINK_IDS = shortLinkIds[shortLinksIdKey]
+  SHORTLINK_IDS = shortLinkIds[shortLinksIdKey] || {};
 
   INITIALIZED = true;
 }
@@ -83,8 +83,10 @@ function setStorage(
   switch (type) {
     case StorageType.SHORTLINK:
       SHORTLINK_IDS[key] = value;
+      break;
     case StorageType.ID_RESERVED:
       USED_IDS[key] = value;
+      break;
   }
 
   // save to disk
@@ -96,8 +98,10 @@ function removeStorage(key: string, type: StorageType) {
   switch (type) {
     case StorageType.SHORTLINK:
       delete SHORTLINK_IDS[key];
+      break;
     case StorageType.ID_RESERVED:
       delete USED_IDS[key];
+      break;
   }
 
   // save to disk
