@@ -66,10 +66,10 @@ function renderLink(link: Link) {
 
   // Text area: with short link and long link displayed
 
-  const textNode = document.createElement('div');
-  textNode.className = 'justify-content-start';
+  const textNode = document.createElement("div");
+  textNode.className = "justify-content-start";
   const shortLinkNode = document.createTextNode(
-    GO_PREFIX + link.shortLink + " " 
+    GO_PREFIX + link.shortLink + " "
   );
   textNode.appendChild(shortLinkNode);
 
@@ -77,10 +77,10 @@ function renderLink(link: Link) {
   longLinkPreview.className = "text-muted";
   let longLinkText = link.longLink.slice(0, LONG_LINK_CHARACTER_MAX);
   if (longLinkText.length < link.longLink.length) {
-    longLinkText = longLinkText + '...';
+    longLinkText = longLinkText + "...";
   }
   longLinkPreview.innerHTML = longLinkText;
-  textNode.appendChild(longLinkPreview)
+  textNode.appendChild(longLinkPreview);
 
   // Button
 
