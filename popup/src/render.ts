@@ -68,7 +68,7 @@ function renderLink(link: Link) {
 
   const textNode = document.createElement("div");
   textNode.className = "justify-content-start";
-  const shortLinkNode = document.createElement('a');
+  const shortLinkNode = document.createElement("a");
   shortLinkNode.href = link.longLink;
   shortLinkNode.target = "_blank"; // to open in a new tab instead of in-extension
   shortLinkNode.innerHTML = GO_PREFIX + link.shortLink + " ";

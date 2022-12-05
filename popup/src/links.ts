@@ -1,6 +1,6 @@
 import { PREFIX } from "./constants";
 
-const MAX_LINKS = 5 // chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES; 
+const MAX_LINKS = 5; // chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES;
 
 export interface Link {
   shortLink: string;
@@ -22,7 +22,7 @@ function sanitizeInput(text: string) {
 
 enum StorageType {
   SHORTLINK = 1,
-  ID_RESERVED = 2
+  ID_RESERVED = 2,
 }
 
 function storageKey(key: string, type: StorageType): string {
@@ -30,13 +30,13 @@ function storageKey(key: string, type: StorageType): string {
   let keyPrefix;
   switch (type) {
     case StorageType.SHORTLINK:
-      keyPrefix = 'SL-';
+      keyPrefix = "SL-";
       break;
     case StorageType.ID_RESERVED:
-      keyPrefix = 'RS-';
+      keyPrefix = "RS-";
       break;
     default:
-      keyPrefix = '';
+      keyPrefix = "";
   }
   return keyPrefix + key;
 }
@@ -47,20 +47,24 @@ async function getStorage(key: string, type: StorageType): Promise<any> {
   return result[_key];
 }
 
-async function setStorage(key: string, value: number|boolean, type: StorageType) {
-  chrome.storage.local.set({[storageKey(key, type)]: value},  () => {});
+async function setStorage(
+  key: string,
+  value: number | boolean,
+  type: StorageType
+) {
+  chrome.storage.local.set({ [storageKey(key, type)]: value }, () => {});
 }
 
 async function removeStorage(key: string, type: StorageType) {
-  chrome.storage.local.remove([storageKey(key, type)])
+  chrome.storage.local.remove([storageKey(key, type)]);
 }
 
 async function reserveID(id: number) {
-  setStorage(id.toString(), true, StorageType.ID_RESERVED)
+  setStorage(id.toString(), true, StorageType.ID_RESERVED);
 }
 
 async function freeID(id: number) {
-  setStorage(id.toString(), false, StorageType.ID_RESERVED)
+  setStorage(id.toString(), false, StorageType.ID_RESERVED);
 }
 
 async function idIsFree(id: number): Promise<boolean> {
@@ -68,9 +72,7 @@ async function idIsFree(id: number): Promise<boolean> {
   return !isReserved; // nil and false ID reservation status show up as free
 }
 
-async function getShortLinkID(
-  shortLink: string,
-): Promise<number | undefined> {
+async function getShortLinkID(shortLink: string): Promise<number | undefined> {
   let id: number;
   const result = await getStorage(shortLink, StorageType.SHORTLINK);
   if (result) {
@@ -90,7 +92,7 @@ async function getFreeID(): Promise<number | undefined> {
   // The iteration is capped so it shouldn't be a huge hit to speed.
   let id;
   // ID numbers must start at 1 to abide by chrome API rules
-  for (let i=1; i <= MAX_LINKS; i++) {
+  for (let i = 1; i <= MAX_LINKS; i++) {
     const isFree = await idIsFree(i);
     if (isFree) {
       id = i;
@@ -100,9 +102,7 @@ async function getFreeID(): Promise<number | undefined> {
   return id;
 }
 
-async function setShortLinkID(
-  shortLink: string,
-): Promise<number | undefined> {
+async function setShortLinkID(shortLink: string): Promise<number | undefined> {
   const id = await getFreeID();
   if (!id) {
     return;
