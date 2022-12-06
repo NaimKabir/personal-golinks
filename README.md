@@ -4,7 +4,13 @@ Go-links completely managed in a browser extension.
 
 There is a limit of [5000](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/#property-MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES) links.
 
-## For developers
+<details>
+
+<summary>
+
+### For developers
+
+</summary>
 
 This is a Chrome extension using Manifest V3. We take advantage of Chrome's [DeclarativeNetRequest API](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/) to redirect requests to custom short-links.
 
@@ -24,6 +30,8 @@ This extension is styled using [Bootstrap](https://getbootstrap.com/docs/5.2/get
 
 To format code:
 `npx prettier --write .`
+
+</details>
 
 ## References
 
