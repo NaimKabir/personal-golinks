@@ -2,8 +2,10 @@ import { PREFIX } from "./constants";
 
 const MAX_LINKS = 5; // chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES;
 
+// Globals used to manage fetches from chrome storage.
+// Initialized upon import of this module
 var INITIALIZED = false;
-var USED_IDS: {[key: string]: any} = {};
+var USED_IDS: {[key: string]: any} = {}; 
 var SHORTLINK_IDS: {[key: string]: any} = {};
 
 export interface Link {
@@ -41,12 +43,10 @@ function storageKey(type: StorageType) {
 export async function initStorage() {
   // We do big fetches and then deal entirely with caches so we don't hit API rate limits
   const usedIdKey = storageKey(StorageType.ID_RESERVED);
-  let usedIds = await chrome.storage.local.get(usedIdKey);
-  USED_IDS = usedIds[usedIdKey] || {};
-
   const shortLinksIdKey = storageKey(StorageType.SHORTLINK);
-  let shortLinkIds = await chrome.storage.local.get(shortLinksIdKey);
-  SHORTLINK_IDS = shortLinkIds[shortLinksIdKey] || {};
+  let storage = await chrome.storage.local.get([usedIdKey, shortLinksIdKey]);
+  USED_IDS = storage[usedIdKey] || {};
+  SHORTLINK_IDS = storage[shortLinksIdKey] || {};
 
   INITIALIZED = true;
 }
@@ -196,3 +196,5 @@ export async function removeLink(link: Link) {
     removeRuleIds: [link.id],
   });
 }
+
+initStorage();
