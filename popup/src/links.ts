@@ -2,6 +2,7 @@ import { PREFIX } from "./constants";
 
 const RESERVED_LINKS = 1000;
 const MAX_LINKS = chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES - RESERVED_LINKS;
+const WARN_THRESHOLD = 5; // warn if we get within 5 of the limit
 
 // Globals used to manage fetches from chrome storage.
 // Initialized upon import of this module
@@ -17,18 +18,26 @@ export interface Link {
 
 // Utilities
 
-export function getLinkCount(): number {
-  return Object.keys(SHORTLINK_IDS).length;
-}
-
-export function getMaxLinkCount(): number {
-  return MAX_LINKS;
-}
-
 export function updateLinkCounter() {
+  const count = Object.keys(SHORTLINK_IDS).length;;
   const linkCounter = document.getElementById("maxLinkWarning");
-  const text = `${getLinkCount()}/${getMaxLinkCount()} links created`
+  const text = `${count}/${MAX_LINKS} links created`
   linkCounter.innerHTML = text;
+  // Check to see how close we are to the max limit and warn or alert if so
+  const textClassPrefix = "text-end "
+  const addButton = document.getElementById("add");
+  const buttonClassPrefix = "btn btn-primary "
+  if (count >= MAX_LINKS) {
+    linkCounter.className = textClassPrefix + "text-danger"
+    // Make button unclickable
+    addButton.className = buttonClassPrefix + "disabled" 
+  } else if (count > MAX_LINKS - WARN_THRESHOLD) {
+    linkCounter.className = textClassPrefix + "text-warning"
+    addButton.className = buttonClassPrefix
+  } else {
+    linkCounter.className = textClassPrefix + "text-muted"
+    addButton.className = buttonClassPrefix
+  }
 }
 
 function notEmpty(object: Object) {
