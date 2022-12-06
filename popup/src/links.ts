@@ -141,14 +141,12 @@ async function getFreeID(): Promise<number | undefined> {
   // The iteration is capped so it shouldn't be a huge hit to speed.
   let id;
   // ID numbers must start at 1 to abide by chrome API rules
-  let i = 1;
-  while ( i <= MAX_LINKS) {
+  for (let i =1; i <= MAX_LINKS; i++) {
     const isFree = await idIsFree(i);
     if (isFree) {
       id = i;
       break;
     }
-    i += 1;
   }
   return id;
 }
