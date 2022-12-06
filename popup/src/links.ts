@@ -1,4 +1,4 @@
-import { PREFIX } from "./constants";
+import { COMPONENTS, PREFIX } from "./constants";
 
 const RESERVED_LINKS = 1000;
 const MAX_LINKS = chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES - RESERVED_LINKS;
@@ -20,23 +20,22 @@ export interface Link {
 
 export function updateLinkCounter() {
   const count = Object.keys(SHORTLINK_IDS).length;;
-  const linkCounter = document.getElementById("maxLinkWarning");
+  const linkCounter = document.getElementById(COMPONENTS.linkCounter.id);
   const text = `${count}/${MAX_LINKS} links created`
   linkCounter.innerHTML = text;
   // Check to see how close we are to the max limit and warn or alert if so
-  const textClassPrefix = "text-end "
-  const addButton = document.getElementById("add");
-  const buttonClassPrefix = "btn btn-primary "
+  const addButton = document.getElementById(COMPONENTS.addButton.id);
+  ;
   if (count >= MAX_LINKS) {
-    linkCounter.className = textClassPrefix + "text-danger"
+    linkCounter.className = COMPONENTS.linkCounter.defaultClassName + " text-danger"
     // Make button unclickable
-    addButton.className = buttonClassPrefix + "disabled" 
+    addButton.className = COMPONENTS.addButton.defaultClassName + " disabled" 
   } else if (count > MAX_LINKS - WARN_THRESHOLD) {
-    linkCounter.className = textClassPrefix + "text-warning"
-    addButton.className = buttonClassPrefix
+    linkCounter.className = COMPONENTS.linkCounter.defaultClassName + " text-warning"
+    addButton.className = COMPONENTS.addButton.defaultClassName
   } else {
-    linkCounter.className = textClassPrefix + "text-muted"
-    addButton.className = buttonClassPrefix
+    linkCounter.className = COMPONENTS.linkCounter.defaultClassName + " text-muted"
+    addButton.className = COMPONENTS.addButton.defaultClassName
   }
 }
 

@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import { GO_PREFIX, PREFIX } from "./constants";
+import { COMPONENTS, GO_PREFIX, PREFIX } from "./constants";
 import { removeLink } from "./links";
 
 import type { Link } from "./links";
@@ -61,10 +61,9 @@ function renderTrashCanIcon() {
 }
 
 function renderLink(link: Link) {
-  const linksElement = document.getElementById("links");
+  const linksElement = document.getElementById(COMPONENTS.links.id);
   const linkNode = document.createElement("li");
-  linkNode.className =
-    "list-group-item d-flex justify-content-between align-items-center list-group-item-action";
+  linkNode.className = COMPONENTS.links.defaultClassName;
 
   // Text area: with short link and long link displayed
 
