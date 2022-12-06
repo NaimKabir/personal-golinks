@@ -37,7 +37,9 @@ chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 const shortLinkForm: HTMLInputElement = <HTMLInputElement>(
   document.getElementById(COMPONENTS.shortLinkForm.id)
 );
-const shortLinkPreview = document.getElementById(COMPONENTS.shortLinkPreview.id);
+const shortLinkPreview = document.getElementById(
+  COMPONENTS.shortLinkPreview.id
+);
 shortLinkForm.addEventListener("keyup", () => {
   updateShortLinkPreview(shortLinkForm, shortLinkPreview);
 });

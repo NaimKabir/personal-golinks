@@ -7,8 +7,6 @@ import type { Link } from "./links";
 
 const LONG_LINK_CHARACTER_MAX = 32;
 
-
-
 function extractLinksFromDynamicRules(
   rules: Array<chrome.declarativeNetRequest.Rule>
 ): Array<Link> {

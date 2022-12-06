@@ -1,14 +1,16 @@
 import { COMPONENTS, PREFIX } from "./constants";
 
 const RESERVED_LINKS = 1000;
-const MAX_LINKS = chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES - RESERVED_LINKS;
+const MAX_LINKS =
+  chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES -
+  RESERVED_LINKS;
 const WARN_THRESHOLD = 5; // warn if we get within 5 of the limit
 
 // Globals used to manage fetches from chrome storage.
 // Initialized upon import of this module
 var INITIALIZED = false;
-var USED_IDS: {[key: string]: any} = {}; 
-var SHORTLINK_IDS: {[key: string]: any} = {};
+var USED_IDS: { [key: string]: any } = {};
+var SHORTLINK_IDS: { [key: string]: any } = {};
 
 export interface Link {
   shortLink: string;
@@ -19,23 +21,25 @@ export interface Link {
 // Utilities
 
 export function updateLinkCounter() {
-  const count = Object.keys(SHORTLINK_IDS).length;;
+  const count = Object.keys(SHORTLINK_IDS).length;
   const linkCounter = document.getElementById(COMPONENTS.linkCounter.id);
-  const text = `${count}/${MAX_LINKS} links created`
+  const text = `${count}/${MAX_LINKS} links created`;
   linkCounter.innerHTML = text;
   // Check to see how close we are to the max limit and warn or alert if so
   const addButton = document.getElementById(COMPONENTS.addButton.id);
-  ;
   if (count >= MAX_LINKS) {
-    linkCounter.className = COMPONENTS.linkCounter.defaultClassName + " text-danger"
+    linkCounter.className =
+      COMPONENTS.linkCounter.defaultClassName + " text-danger";
     // Make button unclickable
-    addButton.className = COMPONENTS.addButton.defaultClassName + " disabled" 
+    addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
   } else if (count > MAX_LINKS - WARN_THRESHOLD) {
-    linkCounter.className = COMPONENTS.linkCounter.defaultClassName + " text-warning"
-    addButton.className = COMPONENTS.addButton.defaultClassName
+    linkCounter.className =
+      COMPONENTS.linkCounter.defaultClassName + " text-warning";
+    addButton.className = COMPONENTS.addButton.defaultClassName;
   } else {
-    linkCounter.className = COMPONENTS.linkCounter.defaultClassName + " text-muted"
-    addButton.className = COMPONENTS.addButton.defaultClassName
+    linkCounter.className =
+      COMPONENTS.linkCounter.defaultClassName + " text-muted";
+    addButton.className = COMPONENTS.addButton.defaultClassName;
   }
 }
 
@@ -87,18 +91,17 @@ async function getStorage(key: string, type: StorageType): Promise<any> {
   }
 }
 
-function saveBlock(){
-  chrome.storage.local.set({
-    [storageKey(StorageType.ID_RESERVED)]: USED_IDS,
-    [storageKey(StorageType.SHORTLINK)]: SHORTLINK_IDS,
-  }, () => {});
+function saveBlock() {
+  chrome.storage.local.set(
+    {
+      [storageKey(StorageType.ID_RESERVED)]: USED_IDS,
+      [storageKey(StorageType.SHORTLINK)]: SHORTLINK_IDS,
+    },
+    () => {}
+  );
 }
 
-function setStorage(
-  key: string,
-  value: number | boolean,
-  type: StorageType
-) {
+function setStorage(key: string, value: number | boolean, type: StorageType) {
   // write locally
   switch (type) {
     case StorageType.SHORTLINK:
@@ -149,7 +152,7 @@ async function getFreeID(): Promise<number | undefined> {
   // The iteration is capped so it shouldn't be a huge hit to speed.
   let id;
   // ID numbers must start at 1 to abide by chrome API rules
-  for (let i =1; i <= MAX_LINKS; i++) {
+  for (let i = 1; i <= MAX_LINKS; i++) {
     const isFree = await idIsFree(i);
     if (isFree) {
       id = i;
@@ -184,7 +187,7 @@ export function addLink(shortLink: string, longLink: string) {
   longLink = sanitizeInput(longLink);
   getShortLinkID(shortLink).then((id: number | undefined) => {
     if (!id) {
-      // TODO: We're likely at the ID limit, and shouldn't do 
+      // TODO: We're likely at the ID limit, and shouldn't do
       // anything here.
       return;
     }

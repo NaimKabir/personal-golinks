@@ -1,6 +1,5 @@
 # ![icon32](https://user-images.githubusercontent.com/4506277/205959569-52bbb2ca-a204-4c8f-84d2-6c16b9948985.png) personal-golinks
 
-
 Go-links completely managed in a browser extension.
 
 There is a limit of [5000](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/#property-MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES) links.
