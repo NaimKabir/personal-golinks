@@ -1,6 +1,7 @@
 import { PREFIX } from "./constants";
 
-const MAX_LINKS = 5; // chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES;
+const RESERVED_LINKS = 1000;
+const MAX_LINKS = chrome.declarativeNetRequest.MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES - RESERVED_LINKS;
 
 // Globals used to manage fetches from chrome storage.
 // Initialized upon import of this module
