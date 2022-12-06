@@ -17,6 +17,20 @@ export interface Link {
 
 // Utilities
 
+export function getLinkCount(): number {
+  return Object.keys(SHORTLINK_IDS).length;
+}
+
+export function getMaxLinkCount(): number {
+  return MAX_LINKS;
+}
+
+export function updateLinkCounter() {
+  const linkCounter = document.getElementById("maxLinkWarning");
+  const text = `${getLinkCount()}/${getMaxLinkCount()} links created`
+  linkCounter.innerHTML = text;
+}
+
 function notEmpty(object: Object) {
   return object && Object.keys(object).length > 0;
 }
@@ -48,6 +62,7 @@ export async function initStorage() {
   let storage = await chrome.storage.local.get([usedIdKey, shortLinksIdKey]);
   USED_IDS = storage[usedIdKey] || {};
   SHORTLINK_IDS = storage[shortLinksIdKey] || {};
+  updateLinkCounter();
 
   INITIALIZED = true;
 }
@@ -188,6 +203,7 @@ export function addLink(shortLink: string, longLink: string) {
         },
       ],
     });
+    updateLinkCounter();
   });
 }
 
@@ -196,6 +212,7 @@ export async function removeLink(link: Link) {
   await chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [link.id],
   });
+  updateLinkCounter();
 }
 
 initStorage();

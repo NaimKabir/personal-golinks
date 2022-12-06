@@ -50,6 +50,7 @@ prepopulateLongLinkForm(longLinkForm);
 
 // Listen for button clicks to submit the form
 const addButton = document.getElementById("add");
+
 addButton.addEventListener("click", () => {
   addLink(shortLinkForm.value, longLinkForm.value || longLinkForm.placeholder);
 });
