@@ -32,4 +32,4 @@ To format code:
 - [Chrome Action API](https://developer.chrome.com/docs/extensions/reference/action/)
 - [Webpack Documentation](https://webpack.js.org/concepts/)
 - [Bootstrap Documentation](https://getbootstrap.com/docs/5.2/getting-started/introduction/)
-- [favicon.io](https://favicon.io/) for favicon generation.
+- [favicon.io](https://favicon.io/) for favicon generation. Shout out to [@johnsorrentino](https://twitter.com/johnsorrentino) for this nice quick tool.
