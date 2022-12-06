@@ -1,6 +1,7 @@
 // Import our custom CSS
 import "./styles.scss";
 
+import { COMPONENTS } from "./constants";
 import { addLink } from "./links";
 import { renderLinks } from "./render";
 
@@ -34,9 +35,11 @@ chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 
 // Update preview go-link as you type
 const shortLinkForm: HTMLInputElement = <HTMLInputElement>(
-  document.getElementById("shortLinkForm")
+  document.getElementById(COMPONENTS.shortLinkForm.id)
 );
-const shortLinkPreview = document.getElementById("shortLinkHelp");
+const shortLinkPreview = document.getElementById(
+  COMPONENTS.shortLinkPreview.id
+);
 shortLinkForm.addEventListener("keyup", () => {
   updateShortLinkPreview(shortLinkForm, shortLinkPreview);
 });
@@ -44,12 +47,12 @@ shortLinkForm.addEventListener("keyup", () => {
 // Fetch URL of open tab as an optimistic guess
 // at the intended longLink
 const longLinkForm: HTMLInputElement = <HTMLInputElement>(
-  document.getElementById("longLinkForm")
+  document.getElementById(COMPONENTS.longLinkForm.id)
 );
 prepopulateLongLinkForm(longLinkForm);
 
 // Listen for button clicks to submit the form
-const addButton = document.getElementById("add");
+const addButton = document.getElementById(COMPONENTS.add.id);
 
 addButton.addEventListener("click", () => {
   addLink(shortLinkForm.value, longLinkForm.value || longLinkForm.placeholder);
