@@ -183,7 +183,7 @@ async function removeShortLinkID(shortLink: string) {
 // Links
 
 export function linkAlreadyExists(shortLink: string): boolean {
-  return !!SHORTLINK_IDS[shortLink]
+  return !!SHORTLINK_IDS[shortLink];
 }
 
 export function addLink(shortLink: string, longLink: string) {
