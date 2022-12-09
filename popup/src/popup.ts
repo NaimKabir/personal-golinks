@@ -1,5 +1,6 @@
 // Import our custom CSS
 import "./styles.scss";
+import {Collapse} from "bootstrap";
 
 import { COMPONENTS } from "./constants";
 import { addLink } from "./links";
@@ -53,7 +54,11 @@ prepopulateLongLinkForm(longLinkForm);
 
 // Listen for button clicks to submit the form
 const addButton = document.getElementById(COMPONENTS.addButton.id);
-
-addButton.addEventListener("click", () => {
-  addLink(shortLinkForm.value, longLinkForm.value || longLinkForm.placeholder);
+var overwriteWarning = document.getElementById(COMPONENTS.overwriteWarning.id);
+const overwriteWarningHandle = new Collapse(overwriteWarning, {toggle: false})
+addButton.addEventListener("click", (submitEvent) => {
+  overwriteWarningHandle.toggle();
+  // Form submission triggers a reload usually—we must prevent this.
+  submitEvent.preventDefault() 
+  // addLink(shortLinkForm.value, longLinkForm.value || longLinkForm.placeholder);
 });
