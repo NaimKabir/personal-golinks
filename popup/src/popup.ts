@@ -47,10 +47,6 @@ const shortLinkForm: HTMLInputElement = <HTMLInputElement>(
 const shortLinkPreview = document.getElementById(
   COMPONENTS.shortLinkPreview.id
 );
-shortLinkForm.addEventListener("keyup", () => {
-  updateShortLinkPreview(shortLinkForm, shortLinkPreview);
-  returnToDefaultButtonState();
-});
 
 // Fetch URL of open tab as an optimistic guess
 // at the intended longLink
@@ -79,7 +75,7 @@ cancelButton.addEventListener("click", (submitEvent) => {
   submitEvent.preventDefault(); // prevent form-submission and page reload
 });
 
-addButton.addEventListener("click", (submitEvent) => {
+function handleAddSubmit(submitEvent: MouseEvent | KeyboardEvent) {
   if (linkAlreadyExists(shortLinkForm.value)) {
     addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
     overwriteWarningHandle.show();
@@ -89,5 +85,18 @@ addButton.addEventListener("click", (submitEvent) => {
       shortLinkForm.value,
       longLinkForm.value || longLinkForm.placeholder
     );
+  }
+}
+
+addButton.addEventListener("click", (submitEvent) => {
+  handleAddSubmit(submitEvent);
+});
+
+shortLinkForm.addEventListener("keyup", (keyEvent) => {
+  if (keyEvent.key == "Enter") {
+    handleAddSubmit(keyEvent);
+  } else {
+    updateShortLinkPreview(shortLinkForm, shortLinkPreview);
+    returnToDefaultButtonState();
   }
 });
