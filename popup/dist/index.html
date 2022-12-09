@@ -8,16 +8,27 @@
 	<div>
 		<form>
 			<div class="mb-3">
-		  		<label class="form-label" for="longLink">Long link:</label>
+		  		<label class="form-label fw-bold" for="longLink">Destination:</label>
 		  		<input class="form-control" type="text" id="longLinkForm" name="longLink">
 			</div>
 			<div class="mb-3">
-		  		<label class="form-label" for="shortLink">Short link:</label>
+		  		<label class="form-label fw-bold" for="shortLink">Short-link:</label>
 		  		<input class="form-control" type="text" id="shortLinkForm" name="shortLink" aria-describedby="shortLinkHelp">
  	   			<div id="shortLinkHelp" class="form-text">go/</div>
  	   			<p id="maxLinkWarning" class="text-end text-muted">0/4000 links created</p>
 			</div>
 		  	<input class="btn btn-primary" type="submit" id="add" value="Add">
+			<div class="collapse py-3 text-center" id="overwriteWarning">
+				<div class="card card-body">
+				<p class='text-muted'>
+					This will overwrite a previous link.
+				</p>
+				<div>
+					<input class="btn btn-secondary" type="submit" id="cancel" value="Cancel">
+					<input class="btn btn-danger" type="submit" id="overwrite" value="Overwite">
+				</div>
+				</div>
+			</div>
 		</form>
 	</div>
 	<div class="overflow-auto py-4">

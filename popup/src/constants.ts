@@ -13,6 +13,18 @@ export const COMPONENTS: { [key: string]: Component } = {
     id: "add",
     defaultClassName: "btn btn-primary",
   },
+  overwriteButton: {
+    id: "overwrite",
+    defaultClassName: "btn btn-danger",
+  },
+  cancelButton: {
+    id: "cancel",
+    defaultClassName: "btn btn-secondary",
+  },
+  overwriteWarning: {
+    id: "overwriteWarning",
+    defaultClassName: "collapse",
+  },
   linkCounter: {
     id: "maxLinkWarning",
     defaultClassName: "text-end",

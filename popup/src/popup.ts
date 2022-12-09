@@ -1,8 +1,9 @@
 // Import our custom CSS
 import "./styles.scss";
+import {Collapse} from "bootstrap";
 
 import { COMPONENTS } from "./constants";
-import { addLink } from "./links";
+import { linkAlreadyExists, addLink } from "./links";
 import { renderLinks } from "./render";
 
 function prepopulateLongLinkForm(longLinkForm: HTMLInputElement) {
@@ -33,6 +34,10 @@ function updateShortLinkPreview(
 // we've set.
 chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 
+//
+var overwriteWarning = document.getElementById(COMPONENTS.overwriteWarning.id);
+const overwriteWarningHandle = new Collapse(overwriteWarning, {toggle: false})
+
 // Update preview go-link as you type
 const shortLinkForm: HTMLInputElement = <HTMLInputElement>(
   document.getElementById(COMPONENTS.shortLinkForm.id)
@@ -42,6 +47,7 @@ const shortLinkPreview = document.getElementById(
 );
 shortLinkForm.addEventListener("keyup", () => {
   updateShortLinkPreview(shortLinkForm, shortLinkPreview);
+  returnToDefaultButtonState()
 });
 
 // Fetch URL of open tab as an optimistic guess
@@ -53,7 +59,31 @@ prepopulateLongLinkForm(longLinkForm);
 
 // Listen for button clicks to submit the form
 const addButton = document.getElementById(COMPONENTS.addButton.id);
+function returnToDefaultButtonState() {
+  addButton.className = COMPONENTS.addButton.defaultClassName 
+  overwriteWarningHandle.hide()
+}
 
-addButton.addEventListener("click", () => {
+// We expose a separate "overwrite" button in case the shortLink submitted already
+// exists
+const overwriteButton = document.getElementById(COMPONENTS.overwriteButton.id);
+overwriteButton.addEventListener("click", (_) => {
   addLink(shortLinkForm.value, longLinkForm.value || longLinkForm.placeholder);
+});
+
+const cancelButton = document.getElementById(COMPONENTS.cancelButton.id);
+cancelButton.addEventListener("click", (submitEvent => {
+  returnToDefaultButtonState()
+  submitEvent.preventDefault() // prevent form-submission and page reload
+}))
+
+addButton.addEventListener("click", (submitEvent) => {
+  if (linkAlreadyExists(shortLinkForm.value)) {
+    addButton.className = COMPONENTS.addButton.defaultClassName + " disabled"
+    overwriteWarningHandle.show();
+    submitEvent.preventDefault() // prevent form-submission and page reload
+  } 
+  else {
+    addLink(shortLinkForm.value, longLinkForm.value || longLinkForm.placeholder);
+  }
 });
