@@ -17,6 +17,10 @@ export const COMPONENTS: { [key: string]: Component } = {
     id: "overwrite",
     defaultClassName: "btn btn-danger",
   },
+  cancelButton: {
+    id: "cancel",
+    defaultClassName: "btn btn-secondary",
+  },
   overwriteWarning: {
     id: "overwriteWarning",
     defaultClassName: "collapse",
