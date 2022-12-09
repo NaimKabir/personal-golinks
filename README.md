@@ -14,6 +14,13 @@ There is a limit of [5000](https://developer.chrome.com/docs/extensions/referenc
 
 This is a Chrome extension using Manifest V3. We take advantage of Chrome's [DeclarativeNetRequest API](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/) to redirect requests to custom short-links.
 
+### Development
+
+Entrypoint is `./popup/src/popup.ts`. You can explore dependencies and logic best from there, but a gist:
+* `./popup/src/constants.ts` contains globally useful prefixes, as well as a mapping from HTML components and their IDs to a Typescript-readable object.
+* `./popup/src/render.ts` manages rendering dynamic elements like the shortlink list
+* `./popup/src/links.ts` manages mutations: adding and removing links, and the internal memory management required to do that
+
 ### Bundling
 
 This project is bundled with [Webpack](https://webpack.js.org/concepts/). To re-build as you edit, try:
