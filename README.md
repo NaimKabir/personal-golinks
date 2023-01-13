@@ -1,8 +1,38 @@
 # ![icon32](https://user-images.githubusercontent.com/4506277/205959569-52bbb2ca-a204-4c8f-84d2-6c16b9948985.png) personal-golinks
 
-Go-links completely managed in a browser extension.
+A personal link-shortener that works entirely within your browser.
 
-There is a limit of [5000](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/#property-MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES) links.
+This extension is compliant with Google's new Manifest V3, so it should be able to stay on the webstore for a while 😅.
+
+## Usage
+
+### Add a short-link
+
+If you're on a page you'd like a short-link to, simply click on the extension and it should pre-fill it as the destination.
+
+If you'd like to link somewhere else entirely, feel free to edit this pre-filled value. This can even work for deep-links into applications. For example, I use Joplin, and I can open a Joplin page with a URI like `joplin://x-callback-url/openFolder?id=example`. Note: this won't work for file URIs because of Chrome permissioning.
+
+Tap enter or click submit, and you'll see your new short-link!
+
+*There is a limit of 4000 links.*
+
+### Use a short-link
+
+Simply type a short-link into your browser, and you'll be redirected to the destination.
+
+### Remove a short-link
+
+To remove a short-link, click the trash can icon next to it.
+
+### Search
+
+You can search your short-links by typing into the search bar. The list of links will update automatically as you type.
+
+### Overwrite a short-link
+
+If you type in a short-link you've already used, you'll get a warning and the option to overwrite your link.
+
+You can either cancel or go ahead and overwrite.
 
 <details>
 
