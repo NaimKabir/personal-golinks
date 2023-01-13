@@ -30,10 +30,6 @@ function updateShortLinkPreview(
   shortLinkPreview.innerHTML = "go/" + shortLinkForm.value;
 }
 
-// Display current Go-links—fetched directly from Chrome redirect-rules
-// we've set.
-chrome.declarativeNetRequest.getDynamicRules(renderLinks);
-
 //
 var overwriteWarning = document.getElementById(COMPONENTS.overwriteWarning.id);
 const overwriteWarningHandle = new Collapse(overwriteWarning, {
@@ -106,5 +102,9 @@ const searchBar: HTMLInputElement = <HTMLInputElement>(
 );
 searchBar.addEventListener("keyup", (keyEvent) => {
   setSearchFilter(searchBar.value);
-  chrome.declarativeNetRequest.getDynamicRules(renderLinks);
+  renderLinks()
 });
+
+// Display current Go-links—fetched directly from Chrome redirect-rules
+// we've set.
+renderLinks()

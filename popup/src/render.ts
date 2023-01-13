@@ -6,7 +6,16 @@ import { removeLink } from "./links";
 import type { Link } from "./links";
 
 const LONG_LINK_CHARACTER_MAX = 32;
+
+// Global state
+
 var SEARCHFILTER = "";
+
+export const setSearchFilter = (filter: string) => {
+  SEARCHFILTER = filter;
+};
+
+// Rendering
 
 function extractLinksFromDynamicRules(
   rules: Array<chrome.declarativeNetRequest.Rule>
@@ -107,7 +116,7 @@ function clearLinks() {
   }
 }
 
-export function renderLinks(
+function renderDynamicRulesResults(
   dynamicRulesResult: Array<chrome.declarativeNetRequest.Rule>
 ) {
   clearLinks();
@@ -119,6 +128,6 @@ export function renderLinks(
   links.forEach(renderLink);
 }
 
-export const setSearchFilter = (filter: string) => {
-  SEARCHFILTER = filter;
-};
+export function renderLinks(): void {
+  chrome.declarativeNetRequest.getDynamicRules(renderDynamicRulesResults);
+}
