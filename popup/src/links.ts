@@ -20,6 +20,10 @@ export interface Link {
 
 // Utilities
 
+/**
+ * Update the link counter and warn if user is nearing threshold. Disables
+ * the Add Link button entirely if we've reached maximum. 
+ */
 export function updateLinkCounter() {
   const count = Object.keys(SHORTLINK_IDS).length;
   const linkCounter = document.getElementById(COMPONENTS.linkCounter.id);
@@ -43,10 +47,6 @@ export function updateLinkCounter() {
   }
 }
 
-function notEmpty(object: Object) {
-  return object && Object.keys(object).length > 0;
-}
-
 function sanitizeInput(text: string) {
   return text || "";
 }
@@ -54,8 +54,8 @@ function sanitizeInput(text: string) {
 // Data storage
 
 enum StorageType {
-  SHORTLINK = 1,
-  ID_RESERVED = 2,
+  SHORTLINK = 1, // Shortlink -> ID map
+  ID_RESERVED = 2, // ID -> is-used? map
 }
 
 function storageKey(type: StorageType) {
@@ -67,6 +67,11 @@ function storageKey(type: StorageType) {
   }
 }
 
+/**
+ * Chrome storage APIs have implicit limits so we work with in-memory data stores.
+ * Storage is primarily used to keep track of what Link IDs have been used already when talking
+ * with the Chrome Dynamic Rules API, and for mapping particular Short-Link text to a Link ID.
+ */
 export async function initStorage() {
   // We do big fetches and then deal entirely with caches so we don't hit API rate limits
   const usedIdKey = storageKey(StorageType.ID_RESERVED);
@@ -91,6 +96,10 @@ async function getStorage(key: string, type: StorageType): Promise<any> {
   }
 }
 
+/**
+ * We don't write individual items to Chrome storage. Rather, we save our entire local caches to it,
+ * infrequently.
+ */
 function saveBlock() {
   chrome.storage.local.set(
     {
@@ -138,7 +147,7 @@ async function idIsFree(id: number): Promise<boolean> {
   return !isReserved; // nil and false ID reservation status show up as free
 }
 
-async function getShortLinkID(shortLink: string): Promise<number | undefined> {
+async function getOrCreateShortLinkID(shortLink: string): Promise<number | undefined> {
   let id = await getStorage(shortLink, StorageType.SHORTLINK);
   if (!id) {
     id = await setShortLinkID(shortLink);
@@ -189,9 +198,9 @@ export function linkAlreadyExists(shortLink: string): boolean {
 export function addLink(shortLink: string, longLink: string) {
   shortLink = sanitizeInput(shortLink);
   longLink = sanitizeInput(longLink);
-  getShortLinkID(shortLink).then((id: number | undefined) => {
+  getOrCreateShortLinkID(shortLink).then((id: number | undefined) => {
     if (!id) {
-      // TODO: We're likely at the ID limit, and shouldn't do
+      // We're likely at the ID limit, and shouldn't do
       // anything here.
       return;
     }

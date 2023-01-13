@@ -105,6 +105,4 @@ searchBar.addEventListener("keyup", (keyEvent) => {
   renderLinks()
 });
 
-// Display current Go-links—fetched directly from Chrome redirect-rules
-// we've set.
 renderLinks()

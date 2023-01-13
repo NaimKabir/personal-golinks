@@ -116,18 +116,22 @@ function clearLinks() {
   }
 }
 
-function renderDynamicRulesResults(
-  dynamicRulesResult: Array<chrome.declarativeNetRequest.Rule>
-) {
-  clearLinks();
-  let links = extractLinksFromDynamicRules(dynamicRulesResult);
-  if (SEARCHFILTER && SEARCHFILTER.length > 0) {
-    links = links.filter((link) => link.shortLink.includes(SEARCHFILTER));
-    console.log(links);
-  }
-  links.forEach(renderLink);
-}
 
+/**
+ * Fetches dynamic linking rules from Chrome and renders them.
+ * If a search filter has been set, it is applied.
+ */
 export function renderLinks(): void {
+  function renderDynamicRulesResults(
+    dynamicRulesResult: Array<chrome.declarativeNetRequest.Rule>
+  ) {
+    clearLinks();
+    let links = extractLinksFromDynamicRules(dynamicRulesResult);
+    if (SEARCHFILTER && SEARCHFILTER.length > 0) {
+      links = links.filter((link) => link.shortLink.includes(SEARCHFILTER));
+      console.log(links);
+    }
+    links.forEach(renderLink);
+  }
   chrome.declarativeNetRequest.getDynamicRules(renderDynamicRulesResults);
 }
