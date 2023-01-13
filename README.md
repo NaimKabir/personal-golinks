@@ -2,7 +2,7 @@
 
 Go-links completely managed in a browser extension.
 
-There is a limit of [5000](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/#property-MAX_NUMBER_OF_DYNAMIC_AND_SESSION_RULES) links.
+There is a limit of 4000 links.
 
 <details>
 
