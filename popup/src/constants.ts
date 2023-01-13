@@ -25,6 +25,10 @@ export const COMPONENTS: { [key: string]: Component } = {
     id: "overwriteWarning",
     defaultClassName: "collapse",
   },
+  searchBar: {
+    id: "search",
+    defaultClassName: "form-control",
+  },
   linkCounter: {
     id: "maxLinkWarning",
     defaultClassName: "text-end",

@@ -6,6 +6,7 @@ import { removeLink } from "./links";
 import type { Link } from "./links";
 
 const LONG_LINK_CHARACTER_MAX = 32;
+var SEARCHFILTER = ''
 
 function extractLinksFromDynamicRules(
   rules: Array<chrome.declarativeNetRequest.Rule>
@@ -98,9 +99,24 @@ function renderLink(link: Link) {
   linksElement.appendChild(linkNode);
 }
 
+function clearLinks() {
+  const linksElement = document.getElementById(COMPONENTS.links.id);
+  for (let i=linksElement.children.length - 1; i >= 0; i--) {
+    console.log(linksElement.children.item(i))
+    linksElement.children.item(i).remove()
+  }
+}
+
 export function renderLinks(
-  dynamicRulesResult: Array<chrome.declarativeNetRequest.Rule>
+  dynamicRulesResult: Array<chrome.declarativeNetRequest.Rule>,
 ) {
-  const links = extractLinksFromDynamicRules(dynamicRulesResult);
+  clearLinks()
+  let links = extractLinksFromDynamicRules(dynamicRulesResult);
+  if (SEARCHFILTER && SEARCHFILTER.length > 0) {
+    links = links.filter(link => link.shortLink.includes(SEARCHFILTER))
+    console.log(links)
+  }
   links.forEach(renderLink);
 }
+
+export const setSearchFilter = (filter: string) => {SEARCHFILTER = filter}
