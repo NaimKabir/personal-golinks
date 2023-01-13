@@ -4,7 +4,7 @@ import { Collapse } from "bootstrap";
 
 import { COMPONENTS } from "./constants";
 import { linkAlreadyExists, addLink } from "./links";
-import { renderLinks } from "./render";
+import { renderLinks, setSearchFilter } from "./render";
 
 function prepopulateLongLinkForm(longLinkForm: HTMLInputElement) {
   // Assume at least one window must be last focused to trigger the extension,
@@ -99,4 +99,12 @@ shortLinkForm.addEventListener("keyup", (keyEvent) => {
     updateShortLinkPreview(shortLinkForm, shortLinkPreview);
     returnToDefaultButtonState();
   }
+});
+
+const searchBar: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById(COMPONENTS.searchBar.id)
+);
+searchBar.addEventListener("keyup", (keyEvent) => {
+  setSearchFilter(searchBar.value);
+  chrome.declarativeNetRequest.getDynamicRules(renderLinks);
 });

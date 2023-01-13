@@ -17,9 +17,10 @@ This is a Chrome extension using Manifest V3. We take advantage of Chrome's [Dec
 ### Development
 
 Entrypoint is `./popup/src/popup.ts`. You can explore dependencies and logic best from there, but a gist:
-* `./popup/src/constants.ts` contains globally useful prefixes, as well as a mapping from HTML components and their IDs to a Typescript-readable object.
-* `./popup/src/render.ts` manages rendering dynamic elements like the shortlink list
-* `./popup/src/links.ts` manages mutations: adding and removing links, and the internal memory management required to do that
+
+- `./popup/src/constants.ts` contains globally useful prefixes, as well as a mapping from HTML components and their IDs to a Typescript-readable object.
+- `./popup/src/render.ts` manages rendering dynamic elements like the shortlink list
+- `./popup/src/links.ts` manages mutations: adding and removing links, and the internal memory management required to do that
 
 ### Bundling
 
