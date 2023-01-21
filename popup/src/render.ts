@@ -1,7 +1,13 @@
 import "./styles.scss";
 
 import { COMPONENTS, GO_PREFIX, PREFIX } from "./constants";
-import { removeLink } from "./links";
+import {
+  getLinkCount,
+  getMaxLinks,
+  linkCountIsAtThreshold,
+  linkCountIsAtWarningThreshold,
+  removeLink,
+} from "./links";
 
 import type { Link } from "./links";
 
@@ -16,6 +22,49 @@ export const setSearchFilter = (filter: string) => {
 };
 
 // Rendering
+
+export function renderAddLinkButton(): HTMLButtonElement {
+  const addButton = <HTMLButtonElement>(
+    document.getElementById(COMPONENTS.addButton.id)
+  );
+  linkCountIsAtThreshold().then((linkCountIsAtThreshold) => {
+    if (linkCountIsAtThreshold) {
+      // Make button unclickable if we're at threshold
+      addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
+    } else {
+      addButton.className = COMPONENTS.addButton.defaultClassName;
+    }
+  });
+  return addButton;
+}
+
+/**
+ * Update the link counter and warn if user is nearing threshold. Disables
+ * the Add Link button entirely if we've reached maximum.
+ */
+export function updateLinkCounter() {
+  const linkCounter = document.getElementById(COMPONENTS.linkCounter.id);
+  getLinkCount().then((count) => {
+    linkCounter.innerHTML = `${count}/${getMaxLinks()} links created`;
+  });
+  // Check to see how close we are to the max limit and warn or alert if so
+  linkCountIsAtThreshold().then((isAtThreshold) => {
+    if (isAtThreshold) {
+      linkCounter.className =
+        COMPONENTS.linkCounter.defaultClassName + " text-danger";
+      return;
+    }
+  });
+  linkCountIsAtWarningThreshold().then((isAtWarningThreshold) => {
+    if (isAtWarningThreshold) {
+      linkCounter.className =
+        COMPONENTS.linkCounter.defaultClassName + " text-warning";
+      return;
+    }
+  });
+  linkCounter.className =
+    COMPONENTS.linkCounter.defaultClassName + " text-muted";
+}
 
 function extractLinksFromDynamicRules(
   rules: Array<chrome.declarativeNetRequest.Rule>
@@ -68,6 +117,13 @@ function renderTrashCanIcon() {
   return iconSvg;
 }
 
+function removeLinkAndRender(link: Link, linkNode: HTMLElement) {
+  removeLink(link).then(() => {
+    updateLinkCounter();
+    linkNode.remove();
+  });
+}
+
 function renderLink(link: Link) {
   const linksElement = document.getElementById(COMPONENTS.links.id);
   const linkNode = document.createElement("li");
@@ -98,8 +154,7 @@ function renderLink(link: Link) {
   buttonNode.className = "btn btn-danger";
   buttonNode.appendChild(renderTrashCanIcon());
   buttonNode.addEventListener("click", () => {
-    removeLink(link);
-    linkNode.remove();
+    removeLinkAndRender(link, linkNode);
   });
 
   linkNode.appendChild(textNode);
@@ -115,7 +170,6 @@ function clearLinks() {
     linksElement.children.item(i).remove();
   }
 }
-
 
 /**
  * Fetches dynamic linking rules from Chrome and renders them.

@@ -14,7 +14,7 @@ If you'd like to link somewhere else entirely, feel free to edit this pre-filled
 
 Tap enter or click submit, and you'll see your new short-link!
 
-*There is a limit of 4000 links.*
+_There is a limit of 4000 links._
 
 ### Use a short-link
 
