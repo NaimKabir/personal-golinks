@@ -20,20 +20,17 @@ export interface Link {
 
 // Utilities
 
-export async function linkCountIsAtThreshold(): Promise<boolean> {
-  const count = await getLinkCount();
+export function linkCountIsAtThreshold(): boolean {
+  const count = getLinkCount();
   return count >= MAX_LINKS;
 }
 
-export async function linkCountIsAtWarningThreshold(): Promise<boolean> {
-  const count = await getLinkCount();
+export function linkCountIsAtWarningThreshold(): boolean {
+  const count = getLinkCount();
   return count >= MAX_LINKS - WARN_THRESHOLD && count < MAX_LINKS;
 }
 
-export async function getLinkCount(): Promise<number> {
-  if (!INITIALIZED) {
-    await initStorage();
-  }
+export function getLinkCount(): number {
   return Object.keys(SHORTLINK_IDS).length;
 }
 

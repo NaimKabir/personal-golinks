@@ -3,17 +3,17 @@ import "./styles.scss";
 import { Collapse } from "bootstrap";
 
 import { COMPONENTS } from "./constants";
-import { linkAlreadyExists, addLink } from "./links";
+import { linkAlreadyExists, addLink, initStorage, getLinkCount } from "./links";
 import {
   renderAddLinkButton,
   renderLinks,
   setSearchFilter,
-  updateLinkCounter,
+  renderLinkCounter,
 } from "./render";
 
 function addLinkAndRender(shortLink: string, longLink: string) {
   addLink(shortLink, longLink);
-  updateLinkCounter();
+  renderLinkCounter(getLinkCount());
 }
 
 function prepopulateLongLinkForm(longLinkForm: HTMLInputElement) {
@@ -40,7 +40,25 @@ function updateShortLinkPreview(
   shortLinkPreview.innerHTML = "go/" + shortLinkForm.value;
 }
 
-//
+function handleAddSubmit(
+  shortLinkForm: HTMLInputElement,
+  longLinkForm: HTMLInputElement,
+  addButton: HTMLButtonElement,
+  overwriteWarningHandle: Collapse,
+  submitEvent: MouseEvent | KeyboardEvent
+) {
+  if (linkAlreadyExists(shortLinkForm.value)) {
+    addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
+    overwriteWarningHandle.show();
+    submitEvent.preventDefault(); // prevent form-submission and page reload
+  } else {
+    addLinkAndRender(
+      shortLinkForm.value,
+      longLinkForm.value || longLinkForm.placeholder
+    );
+  }
+}
+
 var overwriteWarning = document.getElementById(COMPONENTS.overwriteWarning.id);
 const overwriteWarningHandle = new Collapse(overwriteWarning, {
   toggle: false,
@@ -61,8 +79,6 @@ const longLinkForm: HTMLInputElement = <HTMLInputElement>(
 );
 prepopulateLongLinkForm(longLinkForm);
 
-// Listen for button clicks to submit the form
-const addButton = renderAddLinkButton();
 function returnToDefaultButtonState() {
   renderAddLinkButton();
   overwriteWarningHandle.hide();
@@ -84,40 +100,45 @@ cancelButton.addEventListener("click", (submitEvent) => {
   submitEvent.preventDefault(); // prevent form-submission and page reload
 });
 
-function handleAddSubmit(submitEvent: MouseEvent | KeyboardEvent) {
-  if (linkAlreadyExists(shortLinkForm.value)) {
-    addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
-    overwriteWarningHandle.show();
-    submitEvent.preventDefault(); // prevent form-submission and page reload
-  } else {
-    addLinkAndRender(
-      shortLinkForm.value,
-      longLinkForm.value || longLinkForm.placeholder
-    );
-  }
-}
-
-addButton.addEventListener("click", (submitEvent) => {
-  handleAddSubmit(submitEvent);
-  renderAddLinkButton();
-});
-
-shortLinkForm.addEventListener("keyup", (keyEvent) => {
-  if (keyEvent.key == "Enter") {
-    handleAddSubmit(keyEvent);
-  } else {
-    updateShortLinkPreview(shortLinkForm, shortLinkPreview);
-    returnToDefaultButtonState();
-  }
-});
-
 const searchBar: HTMLInputElement = <HTMLInputElement>(
   document.getElementById(COMPONENTS.searchBar.id)
 );
-searchBar.addEventListener("keyup", (keyEvent) => {
+searchBar.addEventListener("keyup", (_) => {
   setSearchFilter(searchBar.value);
   renderLinks();
 });
 
+// Listen for button clicks to submit the form.
+// Button state is heavily reliant on whether we've
+// loaded data into cache—so we explicitly wait before
+// rendering it
+initStorage().then(() => {
+  const addButton = renderAddLinkButton();
+  addButton.addEventListener("click", (submitEvent) => {
+    handleAddSubmit(
+      shortLinkForm,
+      longLinkForm,
+      addButton,
+      overwriteWarningHandle,
+      submitEvent
+    );
+    renderAddLinkButton();
+  });
+
+  shortLinkForm.addEventListener("keyup", (keyEvent) => {
+    if (keyEvent.key == "Enter") {
+      handleAddSubmit(
+        shortLinkForm,
+        longLinkForm,
+        addButton,
+        overwriteWarningHandle,
+        keyEvent
+      );
+    } else {
+      updateShortLinkPreview(shortLinkForm, shortLinkPreview);
+      returnToDefaultButtonState();
+    }
+  });
+});
+
 renderLinks();
-updateLinkCounter(); // This function involves a blocking call—call it last

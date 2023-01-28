@@ -27,41 +27,32 @@ export function renderAddLinkButton(): HTMLButtonElement {
   const addButton = <HTMLButtonElement>(
     document.getElementById(COMPONENTS.addButton.id)
   );
-  linkCountIsAtThreshold().then((linkCountIsAtThreshold) => {
-    if (linkCountIsAtThreshold) {
-      // Make button unclickable if we're at threshold
-      addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
-    } else {
-      addButton.className = COMPONENTS.addButton.defaultClassName;
-    }
-  });
+  if (linkCountIsAtThreshold()) {
+    // Make button unclickable if we're at threshold
+    addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
+  } else {
+    addButton.className = COMPONENTS.addButton.defaultClassName;
+  }
   return addButton;
 }
 
 /**
- * Update the link counter and warn if user is nearing threshold. Disables
- * the Add Link button entirely if we've reached maximum.
+ * Update the link counter and warn if user is nearing threshold.
  */
-export function updateLinkCounter() {
+export function renderLinkCounter(linkCount: number) {
   const linkCounter = document.getElementById(COMPONENTS.linkCounter.id);
-  getLinkCount().then((count) => {
-    linkCounter.innerHTML = `${count}/${getMaxLinks()} links created`;
-  });
+  linkCounter.innerHTML = `${linkCount}/${getMaxLinks()} links created`;
   // Check to see how close we are to the max limit and warn or alert if so
-  linkCountIsAtThreshold().then((isAtThreshold) => {
-    if (isAtThreshold) {
-      linkCounter.className =
-        COMPONENTS.linkCounter.defaultClassName + " text-danger";
-      return;
-    }
-  });
-  linkCountIsAtWarningThreshold().then((isAtWarningThreshold) => {
-    if (isAtWarningThreshold) {
-      linkCounter.className =
-        COMPONENTS.linkCounter.defaultClassName + " text-warning";
-      return;
-    }
-  });
+  if (linkCountIsAtThreshold()) {
+    linkCounter.className =
+      COMPONENTS.linkCounter.defaultClassName + " text-danger";
+    return;
+  }
+  if (linkCountIsAtWarningThreshold()) {
+    linkCounter.className =
+      COMPONENTS.linkCounter.defaultClassName + " text-warning";
+    return;
+  }
   linkCounter.className =
     COMPONENTS.linkCounter.defaultClassName + " text-muted";
 }
@@ -119,7 +110,7 @@ function renderTrashCanIcon() {
 
 function removeLinkAndRender(link: Link, linkNode: HTMLElement) {
   removeLink(link).then(() => {
-    updateLinkCounter();
+    renderLinkCounter(getLinkCount());
     renderAddLinkButton();
     linkNode.remove();
   });
@@ -182,6 +173,7 @@ export function renderLinks(): void {
   ) {
     clearLinks();
     let links = extractLinksFromDynamicRules(dynamicRulesResult);
+    renderLinkCounter(links.length);
     if (SEARCHFILTER && SEARCHFILTER.length > 0) {
       links = links.filter((link) => link.shortLink.includes(SEARCHFILTER));
       console.log(links);
