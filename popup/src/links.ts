@@ -20,31 +20,25 @@ export interface Link {
 
 // Utilities
 
-/**
- * Update the link counter and warn if user is nearing threshold. Disables
- * the Add Link button entirely if we've reached maximum. 
- */
-export function updateLinkCounter() {
-  const count = Object.keys(SHORTLINK_IDS).length;
-  const linkCounter = document.getElementById(COMPONENTS.linkCounter.id);
-  const text = `${count}/${MAX_LINKS} links created`;
-  linkCounter.innerHTML = text;
-  // Check to see how close we are to the max limit and warn or alert if so
-  const addButton = document.getElementById(COMPONENTS.addButton.id);
-  if (count >= MAX_LINKS) {
-    linkCounter.className =
-      COMPONENTS.linkCounter.defaultClassName + " text-danger";
-    // Make button unclickable
-    addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
-  } else if (count > MAX_LINKS - WARN_THRESHOLD) {
-    linkCounter.className =
-      COMPONENTS.linkCounter.defaultClassName + " text-warning";
-    addButton.className = COMPONENTS.addButton.defaultClassName;
-  } else {
-    linkCounter.className =
-      COMPONENTS.linkCounter.defaultClassName + " text-muted";
-    addButton.className = COMPONENTS.addButton.defaultClassName;
+export async function linkCountIsAtThreshold(): Promise<boolean> {
+  const count = await getLinkCount();
+  return count >= MAX_LINKS;
+}
+
+export async function linkCountIsAtWarningThreshold(): Promise<boolean> {
+  const count = await getLinkCount();
+  return count >= MAX_LINKS - WARN_THRESHOLD && count < MAX_LINKS;
+}
+
+export async function getLinkCount(): Promise<number> {
+  if (!INITIALIZED) {
+    await initStorage();
   }
+  return Object.keys(SHORTLINK_IDS).length;
+}
+
+export function getMaxLinks(): number {
+  return MAX_LINKS;
 }
 
 function sanitizeInput(text: string) {
@@ -79,7 +73,6 @@ export async function initStorage() {
   let storage = await chrome.storage.local.get([usedIdKey, shortLinksIdKey]);
   USED_IDS = storage[usedIdKey] || {};
   SHORTLINK_IDS = storage[shortLinksIdKey] || {};
-  updateLinkCounter();
 
   INITIALIZED = true;
 }
@@ -147,7 +140,9 @@ async function idIsFree(id: number): Promise<boolean> {
   return !isReserved; // nil and false ID reservation status show up as free
 }
 
-async function getOrCreateShortLinkID(shortLink: string): Promise<number | undefined> {
+async function getOrCreateShortLinkID(
+  shortLink: string
+): Promise<number | undefined> {
   let id = await getStorage(shortLink, StorageType.SHORTLINK);
   if (!id) {
     id = await setShortLinkID(shortLink);
@@ -225,7 +220,6 @@ export function addLink(shortLink: string, longLink: string) {
         },
       ],
     });
-    updateLinkCounter();
   });
 }
 
@@ -234,7 +228,6 @@ export async function removeLink(link: Link) {
   await chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [link.id],
   });
-  updateLinkCounter();
 }
 
 initStorage();

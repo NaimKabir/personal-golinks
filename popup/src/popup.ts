@@ -4,7 +4,17 @@ import { Collapse } from "bootstrap";
 
 import { COMPONENTS } from "./constants";
 import { linkAlreadyExists, addLink } from "./links";
-import { renderLinks, setSearchFilter } from "./render";
+import {
+  renderAddLinkButton,
+  renderLinks,
+  setSearchFilter,
+  updateLinkCounter,
+} from "./render";
+
+function addLinkAndRender(shortLink: string, longLink: string) {
+  addLink(shortLink, longLink);
+  updateLinkCounter();
+}
 
 function prepopulateLongLinkForm(longLinkForm: HTMLInputElement) {
   // Assume at least one window must be last focused to trigger the extension,
@@ -52,9 +62,9 @@ const longLinkForm: HTMLInputElement = <HTMLInputElement>(
 prepopulateLongLinkForm(longLinkForm);
 
 // Listen for button clicks to submit the form
-const addButton = document.getElementById(COMPONENTS.addButton.id);
+const addButton = renderAddLinkButton();
 function returnToDefaultButtonState() {
-  addButton.className = COMPONENTS.addButton.defaultClassName;
+  renderAddLinkButton();
   overwriteWarningHandle.hide();
 }
 
@@ -62,7 +72,10 @@ function returnToDefaultButtonState() {
 // exists
 const overwriteButton = document.getElementById(COMPONENTS.overwriteButton.id);
 overwriteButton.addEventListener("click", (_) => {
-  addLink(shortLinkForm.value, longLinkForm.value || longLinkForm.placeholder);
+  addLinkAndRender(
+    shortLinkForm.value,
+    longLinkForm.value || longLinkForm.placeholder
+  );
 });
 
 const cancelButton = document.getElementById(COMPONENTS.cancelButton.id);
@@ -77,7 +90,7 @@ function handleAddSubmit(submitEvent: MouseEvent | KeyboardEvent) {
     overwriteWarningHandle.show();
     submitEvent.preventDefault(); // prevent form-submission and page reload
   } else {
-    addLink(
+    addLinkAndRender(
       shortLinkForm.value,
       longLinkForm.value || longLinkForm.placeholder
     );
@@ -86,6 +99,7 @@ function handleAddSubmit(submitEvent: MouseEvent | KeyboardEvent) {
 
 addButton.addEventListener("click", (submitEvent) => {
   handleAddSubmit(submitEvent);
+  renderAddLinkButton();
 });
 
 shortLinkForm.addEventListener("keyup", (keyEvent) => {
@@ -102,7 +116,8 @@ const searchBar: HTMLInputElement = <HTMLInputElement>(
 );
 searchBar.addEventListener("keyup", (keyEvent) => {
   setSearchFilter(searchBar.value);
-  renderLinks()
+  renderLinks();
 });
 
-renderLinks()
+renderLinks();
+updateLinkCounter(); // This function involves a blocking call—call it last
