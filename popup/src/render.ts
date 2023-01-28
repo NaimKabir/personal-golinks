@@ -120,6 +120,7 @@ function renderTrashCanIcon() {
 function removeLinkAndRender(link: Link, linkNode: HTMLElement) {
   removeLink(link).then(() => {
     updateLinkCounter();
+    renderAddLinkButton();
     linkNode.remove();
   });
 }
