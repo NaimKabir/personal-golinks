@@ -171,7 +171,6 @@ export function renderLinks(): void {
   function renderDynamicRulesResults(
     dynamicRulesResult: Array<chrome.declarativeNetRequest.Rule>
   ) {
-    clearLinks();
     let links = extractLinksFromDynamicRules(dynamicRulesResult);
     renderLinkCounter(links.length);
     if (SEARCHFILTER && SEARCHFILTER.length > 0) {
@@ -180,5 +179,10 @@ export function renderLinks(): void {
     }
     links.forEach(renderLink);
   }
+  clearLinks();
+
+  // Do a pre-fetch of the first few links to render them
   chrome.declarativeNetRequest.getDynamicRules(renderDynamicRulesResults);
+
+  // render the rest after the first few are good to go
 }
