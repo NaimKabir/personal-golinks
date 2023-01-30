@@ -64,6 +64,9 @@ function storageKey(type: StorageType) {
  * with the Chrome Dynamic Rules API, and for mapping particular Short-Link text to a Link ID.
  */
 export async function initStorage() {
+  if (INITIALIZED) {
+    return
+  }
   // We do big fetches and then deal entirely with caches so we don't hit API rate limits
   const usedIdKey = storageKey(StorageType.ID_RESERVED);
   const shortLinksIdKey = storageKey(StorageType.SHORTLINK);
