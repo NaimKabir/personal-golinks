@@ -108,6 +108,8 @@ searchBar.addEventListener("keyup", (_) => {
   renderLinks();
 });
 
+renderLinks();
+
 // Listen for button clicks to submit the form.
 // Button state is heavily reliant on whether we've
 // loaded data into cache—so we explicitly wait before
@@ -141,4 +143,3 @@ initStorage().then(() => {
   });
 });
 
-renderLinks();
