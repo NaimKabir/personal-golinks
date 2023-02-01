@@ -2,7 +2,7 @@
 import "./styles.scss";
 import { Collapse } from "bootstrap";
 
-import { COMPONENTS } from "./constants";
+import { COMPONENTS, GO_PREFIX } from "./constants";
 import { linkAlreadyExists, addLink, initStorage, getLinkCount } from "./links";
 import {
   renderAddLinkButton,
@@ -12,7 +12,7 @@ import {
 } from "./render";
 
 function addLinkAndRender(shortLink: string, longLink: string) {
-  addLink(shortLink, longLink);
+  addLink(GO_PREFIX + shortLink, longLink);
   renderLinkCounter(getLinkCount());
 }
 
@@ -37,7 +37,7 @@ function updateShortLinkPreview(
   shortLinkForm: HTMLInputElement,
   shortLinkPreview: HTMLElement
 ) {
-  shortLinkPreview.innerHTML = "go/" + shortLinkForm.value;
+  shortLinkPreview.innerHTML = GO_PREFIX + shortLinkForm.value;
 }
 
 function handleAddSubmit(

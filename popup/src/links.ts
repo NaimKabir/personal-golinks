@@ -1,4 +1,4 @@
-import { COMPONENTS, PREFIX } from "./constants";
+import { DOMAIN_PREFIX } from "./constants";
 
 const RESERVED_LINKS = 1000;
 const MAX_LINKS =
@@ -212,7 +212,7 @@ export function addLink(shortLink: string, longLink: string) {
             },
           },
           condition: {
-            urlFilter: PREFIX + shortLink,
+            urlFilter: DOMAIN_PREFIX + shortLink,
             resourceTypes: [
               chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
             ],

@@ -1,6 +1,8 @@
-# ![icon32](https://user-images.githubusercontent.com/4506277/205959569-52bbb2ca-a204-4c8f-84d2-6c16b9948985.png) personal-golinks
+# ![icon32](https://user-images.githubusercontent.com/4506277/205959569-52bbb2ca-a204-4c8f-84d2-6c16b9948985.png) Personal Shortlinks
 
-A personal link-shortener that works entirely within your browser.
+A personal link-shortener that works entirely within your browser, inspired by [Go-links](https://www.golinks.io/).
+
+So this can work alongside Go-links, this uses the prefix `to/` for all short-links.
 
 This extension is compliant with Google's new Manifest V3, so it should be able to stay on the webstore for a while 😅.
 
