@@ -3,7 +3,13 @@ import "./styles.scss";
 import { Collapse } from "bootstrap";
 
 import { COMPONENTS, GO_PREFIX } from "./constants";
-import { linkAlreadyExists, addLink, initStorage, getLinkCount } from "./links";
+import {
+  linkAlreadyExists,
+  addLink,
+  initStorage,
+  getLinkCount,
+  linkCountIsAtThreshold,
+} from "./links";
 import {
   renderAddLinkButton,
   renderLinks,
@@ -51,6 +57,9 @@ function handleAddSubmit(
     addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
     overwriteWarningHandle.show();
     submitEvent.preventDefault(); // prevent form-submission and page reload
+  } else if (linkCountIsAtThreshold()) {
+    submitEvent.preventDefault(); // prevent form-submission since we're at maximum links
+  } else if (linkCountIsAtThreshold()) {
   } else {
     addLinkAndRender(
       shortLinkForm.value,
