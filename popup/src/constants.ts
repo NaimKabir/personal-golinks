@@ -1,7 +1,5 @@
-const domainPrefix = "*://";
-
-export const GO_PREFIX = "go/";
-export const PREFIX = domainPrefix + GO_PREFIX;
+export const DOMAIN_PREFIX = "*://";
+export const GO_PREFIX = "to/";
 
 interface Component {
   id: string;

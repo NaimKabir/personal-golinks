@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import { COMPONENTS, GO_PREFIX, PREFIX } from "./constants";
+import { COMPONENTS, GO_PREFIX, DOMAIN_PREFIX } from "./constants";
 import {
   getLinkCount,
   getMaxLinks,
@@ -63,7 +63,7 @@ function extractLinksFromDynamicRules(
   return rules.map((rule) => {
     // get shortLink and remove prefix for readability
     let shortLink = rule.condition.urlFilter;
-    shortLink = shortLink.slice(PREFIX.length);
+    shortLink = shortLink.slice(DOMAIN_PREFIX.length);
     return {
       shortLink: shortLink,
       longLink: rule.action.redirect.url,
@@ -128,7 +128,7 @@ function renderLink(link: Link) {
   const shortLinkNode = document.createElement("a");
   shortLinkNode.href = link.longLink;
   shortLinkNode.target = "_blank"; // to open in a new tab instead of in-extension
-  shortLinkNode.innerHTML = GO_PREFIX + link.shortLink + " ";
+  shortLinkNode.innerHTML = link.shortLink + " ";
   textNode.appendChild(shortLinkNode);
 
   const longLinkPreview = document.createElement("footer");
@@ -175,8 +175,11 @@ export function renderLinks(): void {
     let links = extractLinksFromDynamicRules(dynamicRulesResult);
     renderLinkCounter(links.length);
     if (SEARCHFILTER && SEARCHFILTER.length > 0) {
-      links = links.filter((link) => link.shortLink.includes(SEARCHFILTER));
-      console.log(links);
+      // Only search the part of the shortLink that doesn't have the GO_PREFIX.
+      // Else any keyword including the prefix will return all items.
+      links = links.filter((link) =>
+        link.shortLink.slice(GO_PREFIX.length).includes(SEARCHFILTER)
+      );
     }
     links.forEach(renderLink);
   }

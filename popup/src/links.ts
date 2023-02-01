@@ -1,4 +1,4 @@
-import { COMPONENTS, PREFIX } from "./constants";
+import { DOMAIN_PREFIX } from "./constants";
 
 const RESERVED_LINKS = 1000;
 const MAX_LINKS =
@@ -65,7 +65,7 @@ function storageKey(type: StorageType) {
  */
 export async function initStorage() {
   if (INITIALIZED) {
-    return
+    return;
   }
   // We do big fetches and then deal entirely with caches so we don't hit API rate limits
   const usedIdKey = storageKey(StorageType.ID_RESERVED);
@@ -212,7 +212,7 @@ export function addLink(shortLink: string, longLink: string) {
             },
           },
           condition: {
-            urlFilter: PREFIX + shortLink,
+            urlFilter: DOMAIN_PREFIX + shortLink,
             resourceTypes: [
               chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
             ],
