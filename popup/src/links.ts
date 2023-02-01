@@ -65,7 +65,7 @@ function storageKey(type: StorageType) {
  */
 export async function initStorage() {
   if (INITIALIZED) {
-    return
+    return;
   }
   // We do big fetches and then deal entirely with caches so we don't hit API rate limits
   const usedIdKey = storageKey(StorageType.ID_RESERVED);

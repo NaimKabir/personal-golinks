@@ -177,7 +177,9 @@ export function renderLinks(): void {
     if (SEARCHFILTER && SEARCHFILTER.length > 0) {
       // Only search the part of the shortLink that doesn't have the GO_PREFIX.
       // Else any keyword including the prefix will return all items.
-      links = links.filter((link) => link.shortLink.slice(GO_PREFIX.length).includes(SEARCHFILTER));
+      links = links.filter((link) =>
+        link.shortLink.slice(GO_PREFIX.length).includes(SEARCHFILTER)
+      );
     }
     links.forEach(renderLink);
   }
