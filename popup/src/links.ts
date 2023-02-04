@@ -187,9 +187,7 @@ async function removeShortLinkID(shortLink: string) {
 // Links
 
 export function linkAlreadyExists(shortLink: string): boolean {
-  // By convention these are stored with the prefix attached
-  const storedShortLink = GO_PREFIX + shortLink;
-  return !!SHORTLINK_IDS[storedShortLink];
+  return !!SHORTLINK_IDS[shortLink];
 }
 
 export function addLink(shortLink: string, longLink: string) {

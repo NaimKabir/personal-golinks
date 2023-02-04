@@ -17,8 +17,12 @@ import {
   renderLinkCounter,
 } from "./render";
 
-function addLinkAndRender(shortLink: string, longLink: string) {
-  addLink(GO_PREFIX + shortLink, longLink);
+function getShortLinkFromForm(shortLinkForm: HTMLInputElement) {
+  return GO_PREFIX + shortLinkForm.value;
+}
+
+function addLinkAndRender(shortLinkForm: HTMLInputElement, longLink: string) {
+  addLink(getShortLinkFromForm(shortLinkForm), longLink);
   renderLinkCounter(getLinkCount());
 }
 
@@ -43,7 +47,7 @@ function updateShortLinkPreview(
   shortLinkForm: HTMLInputElement,
   shortLinkPreview: HTMLElement
 ) {
-  shortLinkPreview.innerHTML = GO_PREFIX + shortLinkForm.value;
+  shortLinkPreview.innerHTML = getShortLinkFromForm(shortLinkForm);
 }
 
 function handleAddSubmit(
@@ -53,7 +57,7 @@ function handleAddSubmit(
   overwriteWarningHandle: Collapse,
   submitEvent: MouseEvent | KeyboardEvent
 ) {
-  if (linkAlreadyExists(shortLinkForm.value)) {
+  if (linkAlreadyExists(getShortLinkFromForm(shortLinkForm))) {
     addButton.className = COMPONENTS.addButton.defaultClassName + " disabled";
     overwriteWarningHandle.show();
     submitEvent.preventDefault(); // prevent form-submission and page reload
@@ -62,7 +66,7 @@ function handleAddSubmit(
   } else if (linkCountIsAtThreshold()) {
   } else {
     addLinkAndRender(
-      shortLinkForm.value,
+      shortLinkForm,
       longLinkForm.value || longLinkForm.placeholder
     );
   }
@@ -98,7 +102,7 @@ function returnToDefaultButtonState() {
 const overwriteButton = document.getElementById(COMPONENTS.overwriteButton.id);
 overwriteButton.addEventListener("click", (_) => {
   addLinkAndRender(
-    shortLinkForm.value,
+    shortLinkForm,
     longLinkForm.value || longLinkForm.placeholder
   );
 });
