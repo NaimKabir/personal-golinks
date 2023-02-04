@@ -1,4 +1,4 @@
-import { DOMAIN_PREFIX } from "./constants";
+import { DOMAIN_PREFIX, GO_PREFIX } from "./constants";
 
 const RESERVED_LINKS = 1000;
 const MAX_LINKS =
@@ -187,7 +187,9 @@ async function removeShortLinkID(shortLink: string) {
 // Links
 
 export function linkAlreadyExists(shortLink: string): boolean {
-  return !!SHORTLINK_IDS[shortLink];
+  // By convention these are stored with the prefix attached
+  const storedShortLink = GO_PREFIX + shortLink;
+  return !!SHORTLINK_IDS[storedShortLink];
 }
 
 export function addLink(shortLink: string, longLink: string) {
