@@ -13,27 +13,26 @@ async function getPopupPage(options = {}) {
   });
 
   const extPage = await browser.newPage();
-  const extensionUrl = `chrome-extension://${extensionId}/index.html`
+  const extensionUrl = `chrome-extension://${extensionId}/index.html`;
   await extPage.goto(extensionUrl, { waitUntil: "load" });
 
   return extPage;
 }
 
-describe('Google', () => {
-    let extPage;
-    beforeAll(async () => {
-        const extensionId = process.env.CHROME_EXTENSION_ID;
-        await expect(extensionId).toBeDefined();
-        const popupContext = await getPopup({extensionId: extensionId});
+describe("Google", () => {
+  let extPage;
+  beforeAll(async () => {
+    const extensionId = process.env.CHROME_EXTENSION_ID;
+    await expect(extensionId).toBeDefined();
+    const popupContext = await getPopup({ extensionId: extensionId });
 
-        extPage = popupContext.extPage;
-    });
-  
-    it('should be titled "Google"', async () => {
-      await expect(extPage.title()).resolves.toMatch('Google');
-    });
+    extPage = popupContext.extPage;
+  });
+
+  it('should be titled "Google"', async () => {
+    await expect(extPage.title()).resolves.toMatch("Google");
+  });
 });
-
 
 // getPopup({ extensionId: extensionId }).then((result) => {
 //   console.log(result);
