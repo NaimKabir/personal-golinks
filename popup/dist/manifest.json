@@ -5,7 +5,7 @@
   "description": "Redirects http://to/ links",
   "action": {
     "default_title": "Personal Shortlinks",
-    "default_popup": "popup/dist/index.html",
+    "default_popup": "index.html",
     "default_icon": {
       "16": "assets/icon16.png",
       "24": "assets/icon24.png",
