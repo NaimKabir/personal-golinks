@@ -4,7 +4,7 @@
   "description": "Go-links completely managed in a browser extension.",
   "main": "popup/dist/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "repository": {
     "type": "git",

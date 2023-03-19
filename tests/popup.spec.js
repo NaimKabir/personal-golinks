@@ -19,18 +19,22 @@ async function getPopupPage(options = {}) {
   return extPage;
 }
 
-describe("Google", () => {
+describe("End-to-end tests", () => {
   let extPage;
   beforeAll(async () => {
     const extensionId = process.env.CHROME_EXTENSION_ID;
     await expect(extensionId).toBeDefined();
-    const popupContext = await getPopup({ extensionId: extensionId });
+    extPage = await getPopupPage({ extensionId: extensionId });
 
-    extPage = popupContext.extPage;
   });
 
-  it('should be titled "Google"', async () => {
-    await expect(extPage.title()).resolves.toMatch("Google");
+  it('should have more than one link added', async () => {
+    // To get this to link threshold, quickly add the max number of links to test behavior at this condition
+    await extPage.$eval('#shortLinkForm', el => el.value = '1');
+    await extPage.$eval('#add', button  =>  {
+      button.click()
+    });
+    await extPage.$eval('#shortLinkForm', el => el.value = '2');
   });
 });
 
