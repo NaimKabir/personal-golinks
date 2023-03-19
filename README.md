@@ -12,6 +12,10 @@ This extension is compliant with Google's new Manifest V3, so it should be able 
 
 If you're on a page you'd like a short-link to, simply click on the extension and it should pre-fill it as the destination.
 
+
+https://user-images.githubusercontent.com/4506277/226170784-f17668dc-7153-4d05-8d9b-146093bd07bd.mov
+
+
 If you'd like to link somewhere else entirely, feel free to edit this pre-filled value. This can even work for deep-links into applications. For example, I use Joplin, and I can open a Joplin page with a URI like `joplin://x-callback-url/openFolder?id=example`. Note: this won't work for file URIs because of Chrome permissioning.
 
 Tap enter or click submit, and you'll see your new short-link!
@@ -26,6 +30,10 @@ Simply type a short-link into your browser, and you'll be redirected to the dest
 
 To remove a short-link, click the trash can icon next to it.
 
+
+https://user-images.githubusercontent.com/4506277/226171017-d1537cab-8286-412d-8ea9-680ab657da51.mov
+
+
 ### Search
 
 You can search your short-links by typing into the search bar. The list of links will update automatically as you type.
@@ -35,6 +43,11 @@ You can search your short-links by typing into the search bar. The list of links
 If you type in a short-link you've already used, you'll get a warning and the option to overwrite your link.
 
 You can either cancel or go ahead and overwrite.
+
+
+https://user-images.githubusercontent.com/4506277/226170877-60d976a2-42e9-4db2-bfe6-95d78239ad1f.mov
+
+
 
 <details>
 
