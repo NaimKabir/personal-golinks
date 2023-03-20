@@ -13,5 +13,5 @@
     }
   },
   "permissions": ["declarativeNetRequest", "tabs", "storage"],
-  "host_permissions": ["*://go/*", "*://to/*"]
+  "host_permissions": ["*://to/*"]
 }
