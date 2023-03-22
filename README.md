@@ -1,5 +1,7 @@
 # ![icon32](https://user-images.githubusercontent.com/4506277/205959569-52bbb2ca-a204-4c8f-84d2-6c16b9948985.png) Personal Shortlinks
 
+Available in the [**Chrome Web Store**](https://chrome.google.com/webstore/detail/personal-shortlinks/hibijakbmfnigipljhbgedhebcmcbplc?hl=en&authuser=1).
+
 A personal link-shortener that works entirely within your browser, inspired by [Go-links](https://www.golinks.io/).
 
 So this can work alongside Go-links, this uses the prefix `to/` for all short-links.
